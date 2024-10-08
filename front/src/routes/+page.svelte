@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+  import NewsFeed from "$lib/components/NewsFeed/NewsFeed.svelte";
+import SearchPanel from "$lib/components/SearchPanel/SearchPanel.svelte";
+</script>
+
+<SearchPanel/>
+<NewsFeed/>
