@@ -54,7 +54,7 @@
   </div>
   <div class="flex z-10 flex-col max-w-[60rem] w-full p-10">
     {#if !isSearched}
-      <div out:slide={{ duration: 200 }} in:slide={{ duration: 200 }} class="flex flex-col gap-2">
+      <div out:slide={{ duration: 300 }} in:slide={{ duration: 300 }} class="flex flex-col gap-2">
         <h2 class="font-poppins text-3xl font-semibold"> Découvrez les médicaments que vous prenez au quotidien.  </h2>
         <h3 class="font-poppins text-black/70"> Analysez les compositions et prenez soin de votre bien-être. </h3>
       </div>

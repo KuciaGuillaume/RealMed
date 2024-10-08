@@ -76,7 +76,7 @@
 <svelte:window bind:innerHeight />
 
 <div 
-  in:fly={{ duration: 200, y: 100, opacity: 0 }}
+  in:fly={{ duration: 300, y: 100, opacity: 0 }}
   style="height: calc({innerHeight}px - 224px);"
   class="w-screen bg-cgray flex flex-row">
   <div class="w-1/2 h-full">
