@@ -16,6 +16,13 @@ RUN apt-get update && apt-get install -y \
 # Activer le module Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Configurer Apache pour pointer vers le répertoire public de Symfony
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Configurer le DocumentRoot d'Apache pour pointer vers le répertoire public de Symfony
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/apache2.conf
+
 # Installer Composer globalement
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -32,8 +39,9 @@ COPY . .
 # Générer l'autoload
 RUN composer dump-autoload --optimize
 
-# Donner les permissions nécessaires
+# Donner les permissions nécessaires pour le répertoire var et les fichiers de logs
 RUN chown -R www-data:www-data /var/www/html/var /var/www/html/vendor
+RUN chmod -R 775 /var/www/html/var
 
 # Exposer le port 80
 EXPOSE 80

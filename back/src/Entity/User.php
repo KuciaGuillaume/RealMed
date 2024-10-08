@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -35,6 +37,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Contraindication::class, mappedBy="users")
+     */
+    private $contraindications;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Medicine::class, inversedBy="users")
+     */
+    private $favs;
+
+    public function __construct()
+    {
+        $this->contraindications = new ArrayCollection();
+        $this->favs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -118,5 +136,56 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Contraindication>
+     */
+    public function getContraindications(): Collection
+    {
+        return $this->contraindications;
+    }
+
+    public function addContraindication(Contraindication $contraindication): self
+    {
+        if (!$this->contraindications->contains($contraindication)) {
+            $this->contraindications[] = $contraindication;
+            $contraindication->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContraindication(Contraindication $contraindication): self
+    {
+        if ($this->contraindications->removeElement($contraindication)) {
+            $contraindication->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Medicine>
+     */
+    public function getFavs(): Collection
+    {
+        return $this->favs;
+    }
+
+    public function addFav(Medicine $fav): self
+    {
+        if (!$this->favs->contains($fav)) {
+            $this->favs[] = $fav;
+        }
+
+        return $this;
+    }
+
+    public function removeFav(Medicine $fav): self
+    {
+        $this->favs->removeElement($fav);
+
+        return $this;
     }
 }
