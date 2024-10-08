@@ -1,15 +1,14 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
   import { fly, slide } from "svelte/transition";
   import PersonSpecificity from "./PersonSpecificity.svelte";
   import Restrictions from "./Restrictions.svelte";
   import SeachButtonSection from "./SeachButtonSection.svelte";
   import SearchButton from "./SearchButton.svelte";
   import Separator from "./Separator.svelte";
-  import { cubicIn } from "svelte/easing";
   import Fa from "svelte-fa";
   import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+  import { onMount } from "svelte";
 
   let selectedDrug = "Doliprane";
   let selectedCondition = "";
@@ -20,6 +19,7 @@
   export let allergie : string | null;
 
   let isFetching = false;
+  let isMounted = false;
 
   $: isSearched = (drug || condition || allergie) ? true : false;
 
@@ -46,6 +46,10 @@
       isFetching = false;
     }, 1500);
   }
+
+  onMount(() => {
+    isMounted = true;
+  });
 </script>
 
 <div class="relative flex justify-center w-full duration-200  {isSearched ? 'h-40 bg-white border-b' : 'h-96 bg-cgray'}">
@@ -69,14 +73,18 @@
           </button>
         </div>
       {/if}
-      <div class="flex flex-row w-full h-[4rem] bg-white rounded-xl shadow-md p-1 border relative gap-2 z-10 {isSearched ? '': 'mt-6'} duration-200">
-        <SeachButtonSection bind:query={selectedDrug} />
-        <Separator />
-        <PersonSpecificity bind:query={selectedCondition} />
-        <Separator />
-        <Restrictions bind:query={selectedAllergie} />
-        <SearchButton on:click={handleSearch} bind:isFetching />
-      </div>
+      {#if isMounted}
+        <div
+          in:fly={{ duration: 300, y: -10 }}
+          class="flex flex-row w-full h-[4rem] bg-white rounded-xl shadow-md p-1 border relative gap-2 z-10 {isSearched ? '': 'mt-6'} duration-200">
+          <SeachButtonSection bind:query={selectedDrug} />
+          <Separator />
+          <PersonSpecificity bind:query={selectedCondition} />
+          <Separator />
+          <Restrictions bind:query={selectedAllergie} />
+          <SearchButton on:click={handleSearch} bind:isFetching />
+        </div>
+      {/if}
     </div>
   </div>
 </div>

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { tick } from 'svelte';
   import Fa from 'svelte-fa';
-  import { faNotesMedical, faPerson, faSearch, faUser, faUserGroup, faX } from '@fortawesome/free-solid-svg-icons';
+  import { faNotesMedical, faUserGroup, faX } from '@fortawesome/free-solid-svg-icons';
   import { fly } from 'svelte/transition';
+  import { faBaby, faChild, faPerson, faPersonDress, faPersonWalkingWithCane, faPersonPregnant } from '@fortawesome/free-solid-svg-icons';
 
   let isSelected = false;
   export let query = '';
@@ -11,49 +11,57 @@
     {
       name: "Bébé",
       description: "Enfant de moins de 2 ans",
-      genderSpecific: false
+      genderSpecific: false,
+      icon: faBaby
     },
     {
       name: "Enfant",
       description: "Personne de 2 à 12 ans",
-      genderSpecific: false
+      genderSpecific: false,
+      icon: faChild
     },
     {
       name: "Adolescent",
       description: "Personne de 13 à 17 ans",
       genderSpecific: true,
-      gender: ["Homme", "Femme"]
+      gender: ["Homme", "Femme"],
+      icon: faPerson
     },
     {
       name: "Adulte Homme",
       description: "Homme de 18 ans ou plus",
       genderSpecific: true,
-      gender: "Homme"
+      gender: "Homme",
+      icon: faPerson
     },
     {
       name: "Adulte Femme",
       description: "Femme de 18 ans ou plus",
       genderSpecific: true,
-      gender: "Femme"
+      gender: "Femme",
+      icon: faPersonDress
     },
     {
       name: "Femme enceinte",
       description: "Femme en période de grossesse",
       genderSpecific: true,
       gender: "Femme",
-      specificCondition: "Grossesse"
+      specificCondition: "Grossesse",
+      icon: faPersonPregnant
     },
     {
       name: "Senior Homme",
       description: "Homme de plus de 65 ans",
       genderSpecific: true,
-      gender: "Homme"
+      gender: "Homme",
+      icon: faPersonWalkingWithCane
     },
     {
       name: "Senior Femme",
       description: "Femme de plus de 65 ans",
       genderSpecific: true,
-      gender: "Femme"
+      gender: "Femme",
+      icon: faPersonWalkingWithCane
     },
   ];
 
@@ -105,7 +113,7 @@
           on:click={() => query=personType.name} 
           class="flex flex-row w-full min-h-14 items-center justify-start p-2 px-4 hover:bg-gray-100 rounded-xl cursor-pointer gap-4">
           <div class="flex items-center justify-center h-full aspect-square">
-            <Fa icon={faNotesMedical} class="text-gray-500" size="lg" color={"#0279C2"} />
+            <Fa icon={personType.icon} class="text-gray-500" size="lg" color={"#0279C2"} />
           </div>
           <div class="flex flex-col h-full justify-center items-start flex-grow">
             <span class="font-poppins text-sm">{personType.name}</span>
