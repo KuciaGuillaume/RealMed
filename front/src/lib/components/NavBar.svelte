@@ -54,7 +54,7 @@
         <!-- dropdown menu -->
         {#if isOpen}
           <div
-            class="absolute right-0 mt-48 w-48 bg-white rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+            class="absolute right-5 mt-48 w-48 bg-white rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="options-menu"
