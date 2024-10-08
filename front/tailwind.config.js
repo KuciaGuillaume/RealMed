@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        'cgray': '#F6F6F5',
+        'cgray': '#F5F3F3',
+        'cblueHover': '#00578B',
         'cblue': '#0279C2'
       },
       fontFamily: {
