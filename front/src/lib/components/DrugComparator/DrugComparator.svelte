@@ -97,7 +97,6 @@
             <StatLabel label={"Aspect"} value={"Comprimé rond, sécable"} />
             <StatLabel label={"Couleur"} value={"Blanc"} />
             <StatLabel label={"Indications fréquentes"} value={"Douleur, inflammation"} />
-            <StatLabel label={"Effets secondaires possibles"} value={"Nausées, maux de tête"} />
           </div>
         </div>
         <div class="w-full max-h-60 flex-row flex">
