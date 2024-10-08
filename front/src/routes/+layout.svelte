@@ -7,5 +7,4 @@
 <div class="flex flex-col w-full">
   <NavBar />
   <slot />
-  <Footer />
 </div>

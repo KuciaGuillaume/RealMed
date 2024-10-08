@@ -1,10 +1,3 @@
-<script>
-    import Footer from "$lib/components/Footer.svelte";
-    import Header from "$lib/components/Header.svelte";
-</script>
-
-<Header />
-
 <div class="mt-12 p-2">
     <div class="mx-auto max-w-2xl text-center">
         <h6 class="text-1xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -58,4 +51,3 @@
         </div>
     </form>
 </div>
-<Footer />

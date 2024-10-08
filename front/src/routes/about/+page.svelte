@@ -1,10 +1,3 @@
-<script>
-    import Footer from "$lib/components/Footer.svelte";
-    import Header from "$lib/components/Header.svelte";
-</script>
-
-<!-- <Header /> -->
-
 <div class="card-container">
     <div class="card">
         <div class="card-header">
@@ -63,5 +56,3 @@
         </div>
     </div>
 </div>
-
-<Footer />

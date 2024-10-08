@@ -1,10 +1,3 @@
-<script>
-    import Footer from "$lib/components/Footer.svelte";
-    import Header from "$lib/components/Header.svelte";
-</script>
-
-<Header />
-
 <div class="donnees__personnelles">
     <!-- Editeur du site Le présent site web est édité par REALMED. SAS au capital de
     0 euros. Adresse : 349 rue de la Cavalade 34000 Montpellier Téléphone :
@@ -164,5 +157,3 @@
     cette page pour prendre connaissance des éventuelles modifications ou mises à
     jour apportées à notre politique de confidentialité.
 </div>
-
-<Footer />

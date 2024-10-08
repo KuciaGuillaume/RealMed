@@ -1,10 +1,3 @@
-<script>
-    import Footer from "$lib/components/Footer.svelte";
-    import Header from "$lib/components/Header.svelte";
-</script>
-
-<Header />
-
 <div
     class="w-3/4 align-text-bottom bg-cgray relative mx-48 rounded-md p-1.5 my-8 mt-16"
 >
@@ -42,5 +35,3 @@
     Par email : contact@realmed.com <br />
     Par courrier : 349 rue de la cavalade 34000 Montpellier
 </div>
-
-<Footer />

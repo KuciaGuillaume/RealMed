@@ -4,6 +4,7 @@
   import NewsFeed from "$lib/components/NewsFeed/NewsFeed.svelte";
   import FaqContainer from "$lib/components/Faq/FaqContainer.svelte";
   import SearchPanel from "$lib/components/SearchPanel/SearchPanel.svelte";
+  import Footer from "$lib/components/Footer.svelte";
 
   $: drug = $page.url.searchParams.get("drug");
   $: condition = $page.url.searchParams.get("condition");
@@ -16,6 +17,7 @@
 {#if !isSearched}
   <NewsFeed />
   <FaqContainer />
+  <Footer />
 {:else}
   <DrugComparator />
 {/if}
