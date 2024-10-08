@@ -84,7 +84,7 @@
   </div>
   {#key drugItems}
     <div class="w-1/2 h-full pt-4 px-4">
-      <div class="flex flex-col size-full bg-white rounded-xl rounded-b-none border shadow-mds p-4 gap-4">
+      <div class="flex flex-col size-full bg-white rounded-xl rounded-b-none border shadow-mds p-4 gap-4 overflow-y-auto">
         <div>
           <h2 class="font-poppins"> Spécificités du médicament </h2>
           <div class="grid grid-cols-2 gap-2 w-full rounded-lg p-2 px-0">
@@ -130,7 +130,7 @@
             <h2 class="font-poppins">
               Effets secondaires
             </h2>
-            <ul class="font-poppins text-xs gap-1 flex flex-col pt-1">
+            <ul class="font-poppins text-xs gap-1 flex flex-col pt-1 pb-4">
               <ListItem color={"green"} label={"Nausées"} />
               <ListItem color={"green"} label={"Vomissements"} />
               <ListItem color={"orange"} label={"Douleurs abdominales"} />
