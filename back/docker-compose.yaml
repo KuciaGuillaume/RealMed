@@ -11,7 +11,6 @@ services:
       - "8000:80"
     volumes:
       - .:/var/www/html
-      - ./var:/var/www/html/var
     environment:
       DATABASE_URL: "postgresql://realmeduser:password@db:5432/realmed?serverVersion=13&charset=utf8"
     depends_on:
