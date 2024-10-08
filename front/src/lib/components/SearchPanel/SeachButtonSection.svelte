@@ -6,7 +6,7 @@
 
   let isSelected = false;
   let inputEl: HTMLInputElement | null = null;
-  let query = '';
+  export let query = '';
 
   const medics = [
     {

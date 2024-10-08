@@ -5,7 +5,7 @@
   import { fly } from 'svelte/transition';
 
   let isSelected = false;
-  let query = "";
+  export let query = "";
 
   const allergies = [
     {
@@ -96,7 +96,7 @@
     <Fa icon={faBug} class="text-gray-500" size="lg" color="black" />
   </div>
   <div class="flex flex-col h-full justify-center items-start flex-grow">
-    <span class="font-poppins text-xs text-gray-500 text-left">Condition spécifique</span>
+    <span class="font-poppins text-xs text-gray-500 text-left">Allergie</span>
     <span class="font-poppins text-sm">{query == "" ? "Aucune" : query}</span>
   </div>
   {#if !isSelected && query != ""}
