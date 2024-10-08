@@ -1,13 +1,11 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import DrugList from "./DrugList.svelte";
-  import DonutChart from "./DonutChart.svelte";
-  import DrugItem from "./DrugItem.svelte";
   import StatLabel from "./StatLabel.svelte";
-  import Pellet from "../Pellet.svelte";
   import ListItem from "./ListItem.svelte";
-  import Layout from "../../../routes/+layout.svelte";
   import DonutChartSpec from "../DonutChartSpec.svelte";
+
+  export let largePanel : boolean = false;
 
   $: drugItems = [
     {
@@ -77,7 +75,7 @@
 
 <div 
   in:fly={{ duration: 300, y: 100, opacity: 0 }}
-  style="height: calc({innerHeight}px - 224px);"
+  style="{largePanel ? `height: calc(${innerHeight}px - 64px)` : `height: calc(${innerHeight}px - 224px)`}"
   class="w-screen bg-cgray flex flex-row">
   <div class="w-1/2 h-full">
     <DrugList bind:drugItems />
