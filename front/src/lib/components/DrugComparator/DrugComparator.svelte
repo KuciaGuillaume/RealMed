@@ -149,5 +149,3 @@
     </div>
   {/key}
 </div>
-
-<!-- drug.score >= 50 ? '#32de84' : drug.score > 25 ? '#f7b52b' : '#f54242' -->

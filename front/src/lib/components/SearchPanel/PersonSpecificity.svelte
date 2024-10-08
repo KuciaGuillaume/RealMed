@@ -82,7 +82,7 @@
 <button
   use:clickOutside
   on:click={handleClick}
-  class="relative flex flex-row h-full w-[15rem] rounded-lg duration-200 {isSelected ? 'border-cblue border-2' : 'hover:bg-gray-100 border-2 border-transparent'} cursor-default">
+  class="relative flex flex-row h-full w-[17rem] rounded-lg duration-200 {isSelected ? 'border-cblue border-2' : 'hover:bg-gray-100 border-2 border-transparent'} cursor-default">
   <div class="flex items-center justify-center h-full aspect-square">
     <Fa icon={faUserGroup} class="text-gray-500" size="lg" color="black" />
   </div>
