@@ -19,26 +19,32 @@
   export let condition : string | null;
   export let allergie : string | null;
 
+  let isFetching = false;
+
   $: isSearched = (drug || condition || allergie) ? true : false;
 
   const handleSearch = () => {
-    const params = new URLSearchParams();
-
-    if (selectedDrug) {
-      params.append('drug', selectedDrug);
-    }
-    if (selectedCondition) {
-      params.append('condition', selectedCondition);
-    }
-    if (selectedAllergie) { 
-      params.append('allergie', selectedAllergie);
-    }
-
-    if (params.toString() === '') {
-      params.append('drug', 'Doliprane');
-    }
-
-    goto(`?${params.toString()}`);
+    isFetching = true;
+    setTimeout(() => {
+      const params = new URLSearchParams();
+  
+      if (selectedDrug) {
+        params.append('drug', selectedDrug);
+      }
+      if (selectedCondition) {
+        params.append('condition', selectedCondition);
+      }
+      if (selectedAllergie) { 
+        params.append('allergie', selectedAllergie);
+      }
+  
+      if (params.toString() === '') {
+        params.append('drug', 'Doliprane');
+      }
+  
+      goto(`?${params.toString()}`);
+      isFetching = false;
+    }, 1500);
   }
 </script>
 
@@ -69,7 +75,7 @@
         <PersonSpecificity bind:query={selectedCondition} />
         <Separator />
         <Restrictions bind:query={selectedAllergie} />
-        <SearchButton on:click={handleSearch} />
+        <SearchButton on:click={handleSearch} bind:isFetching />
       </div>
     </div>
   </div>
