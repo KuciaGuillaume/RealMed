@@ -5,7 +5,7 @@
   import { fly } from 'svelte/transition';
 
   let isSelected = false;
-  let query = '';
+  export let query = '';
 
   const personTypes = [
     {

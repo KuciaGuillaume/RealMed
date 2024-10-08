@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fly, slide } from "svelte/transition";
   import NewsCard from "./NewsCard.svelte";
 
   const news = [
@@ -36,7 +37,10 @@
 
 </script>
 
-<div class="flex z-0 w-full justify-center flex-col">
+<div 
+  out:slide={{ duration: 200, axis: 'y' }}
+  in:slide={{ duration: 200, axis: 'y' }}
+  class="flex z-0 w-full justify-center flex-col">
   <div class="flex z-10 max-w-[60rem] w-full p-10 gap-4 h-fit">
     <h2 class="font-poppins text-xl text-cblueHover font-semibold">
       Fil d’actualitées
