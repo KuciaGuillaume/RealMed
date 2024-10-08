@@ -1,9 +1,15 @@
+<script>
+  import { slide } from "svelte/transition";
+</script>
+
 <div
-    class="bottom-px left-px min-h-16 text-center align-text-bottom flex items-center justify-center bg-cgray"
-    style="color:blue; text-transform:uppercase; overflow-x:hidden; width:100%"
+    out:slide={{ duration: 300, axis: 'y' }}
+    in:slide={{ duration: 300, axis: 'y' }}
+    class="w-full flex flex-row font-poppins text-sm gap-10 bottom-px left-px h-16 text-center align-text-bottom items-center justify-center bg-cgray text-cblueHover"
+    style="text-transform:uppercase"
 >
-    <span><a href="about">A propos de nous</a></span>
-    <span class="ml-10"><a href="legal_notices">Mentions légales</a></span>
-    <span class="mx-10"><a href="contact_us">Nous contacter</a></span>
-    <span><a href="personal_data">Données personnelles</a></span>
+    <a href="about">A propos de nous</a>
+    <a href="legal_notices">Mentions légales</a>
+    <a href="contact_us">Nous contacter</a>
+    <a href="personal_data">Données personnelles</a>
 </div>
