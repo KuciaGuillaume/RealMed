@@ -24,9 +24,15 @@ class Contraindication
      */
     private $users;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Medicine::class, mappedBy="contraindication")
+     */
+    private $medicines;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->medicines = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -54,6 +60,33 @@ class Contraindication
     public function removeUser(User $user): self
     {
         $this->users->removeElement($user);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Medicine>
+     */
+    public function getMedicines(): Collection
+    {
+        return $this->medicines;
+    }
+
+    public function addMedicine(Medicine $medicine): self
+    {
+        if (!$this->medicines->contains($medicine)) {
+            $this->medicines[] = $medicine;
+            $medicine->addContraindication($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedicine(Medicine $medicine): self
+    {
+        if ($this->medicines->removeElement($medicine)) {
+            $medicine->removeContraindication($this);
+        }
 
         return $this;
     }

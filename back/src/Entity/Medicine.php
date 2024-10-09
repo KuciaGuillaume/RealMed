@@ -34,9 +34,70 @@ class Medicine
      */
     private $users;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $color;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Contraindication::class, inversedBy="medicines")
+     */
+    private $contraindication;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $efficiencyTime;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $aspect;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $size;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $conditionning;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $secondaryEffects;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $format;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $administration;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $durationTime;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $specificConditions = [];
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->contraindication = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,6 +152,162 @@ class Medicine
         if ($this->users->removeElement($user)) {
             $user->removeFav($this);
         }
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contraindication>
+     */
+    public function getContraindication(): Collection
+    {
+        return $this->contraindication;
+    }
+
+    public function addContraindication(Contraindication $contraindication): self
+    {
+        if (!$this->contraindication->contains($contraindication)) {
+            $this->contraindication[] = $contraindication;
+        }
+
+        return $this;
+    }
+
+    public function removeContraindication(Contraindication $contraindication): self
+    {
+        $this->contraindication->removeElement($contraindication);
+
+        return $this;
+    }
+
+    public function getEfficiencyTime(): ?string
+    {
+        return $this->efficiencyTime;
+    }
+
+    public function setEfficiencyTime(?string $efficiencyTime): self
+    {
+        $this->efficiencyTime = $efficiencyTime;
+
+        return $this;
+    }
+
+    public function getAspect(): ?string
+    {
+        return $this->aspect;
+    }
+
+    public function setAspect(?string $aspect): self
+    {
+        $this->aspect = $aspect;
+
+        return $this;
+    }
+
+    public function getSize(): ?string
+    {
+        return $this->size;
+    }
+
+    public function setSize(?string $size): self
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    public function getConditionning(): ?string
+    {
+        return $this->conditionning;
+    }
+
+    public function setConditionning(?string $conditionning): self
+    {
+        $this->conditionning = $conditionning;
+
+        return $this;
+    }
+
+    public function getSecondaryEffects(): ?string
+    {
+        return $this->secondaryEffects;
+    }
+
+    public function setSecondaryEffects(?string $secondaryEffects): self
+    {
+        $this->secondaryEffects = $secondaryEffects;
+
+        return $this;
+    }
+
+    public function getFormat(): ?string
+    {
+        return $this->format;
+    }
+
+    public function setFormat(?string $format): self
+    {
+        $this->format = $format;
+
+        return $this;
+    }
+
+    public function getAdministration(): ?string
+    {
+        return $this->administration;
+    }
+
+    public function setAdministration(?string $administration): self
+    {
+        $this->administration = $administration;
+
+        return $this;
+    }
+
+    public function getDurationTime(): ?string
+    {
+        return $this->durationTime;
+    }
+
+    public function setDurationTime(?string $durationTime): self
+    {
+        $this->durationTime = $durationTime;
+
+        return $this;
+    }
+
+    public function getSpecificConditions(): ?array
+    {
+        return $this->specificConditions;
+    }
+
+    public function setSpecificConditions(?array $specificConditions): self
+    {
+        $this->specificConditions = $specificConditions;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
