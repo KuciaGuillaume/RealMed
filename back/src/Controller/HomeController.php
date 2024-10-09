@@ -49,6 +49,10 @@ class HomeController extends AbstractController
             'durationTime' => $medicine->getDurationTime(),
             'specificCondition' => $medicine->getSpecificConditions(),
             'molecule' => $medicine->getMolecule()->getName(),
+            'other_medicines' => $medicine->getMolecule()->getMedicine()->map(function (Medicine $medicine) {
+                return $medicine->getName();
+            })->toArray(),
+            //TODO : add description and image link
         ];
 
         return new JsonResponse($data);
