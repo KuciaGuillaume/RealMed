@@ -16,7 +16,7 @@ class SecurityController extends AbstractController
     {
         if ($this->getUser()) {
             if ($this->isGranted('ROLE_ADMIN')) {
-                return $this->redirectToRoute('admin'); // Remplacez 'admin' par la route de votre interface EasyAdmin
+                return $this->redirectToRoute('admin');
             }
             return $this->redirectToRoute('home');
         }

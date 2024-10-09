@@ -29,7 +29,7 @@ class HomeController extends AbstractController
      */
     public function getMedicineDetails(string $name, EntityManagerInterface $em): JsonResponse
     {
-        $medicine = $em->getRepository(Medicine::class)->findOneBy(['dosage' => $name]);
+        $medicine = $em->getRepository(Medicine::class)->findOneBy(['name' => $name]);
 
         if (!$medicine) {
             return new JsonResponse(['error' => 'Medicine not found'], 404);
@@ -40,7 +40,7 @@ class HomeController extends AbstractController
             'color' => $medicine->getColor(),
             'efficiencyTime' => $medicine->getEfficiencyTime(),
             'aspect' => $medicine->getAspect(),
-            'commonAffliction' => $medicine->getCommonAffliction(),
+            'commonAffliction' => $medicine->getMolecule()->getCommonAffliction(),
             'size' => $medicine->getSize(),
             'conditionning' => $medicine->getConditionning(),
             'secondaryEffects' => $medicine->getSecondaryEffects(),
