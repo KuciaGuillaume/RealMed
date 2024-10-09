@@ -15,7 +15,7 @@
 
 </script>
 
-<button on:click class="{isSelected ? "border-cblue" : "hover:bg-gray-50"}  flex flex-col w-full h-fit shadow-md border-2 rounded-lg bg-white p-4">
+<button on:click class="{isSelected ? "border-cblue" : "hover:bg-gray-50"}  flex flex-col gap-4 w-full h-fit shadow-md border-2 rounded-lg bg-white p-4">
   <div class="w-fit min-h-8 rounded-md bg-red-500/20 border border-red-500 flex flex-row gap-2 items-center px-2">
     <Fa icon={faExclamationCircle} class="text-red-500" size="sm" color="rgb(239 68 68)" />
     <span class="font-poppins text-xs"> Médicament non recommandé dans votre cas </span>
