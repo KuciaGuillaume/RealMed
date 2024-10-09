@@ -9,15 +9,16 @@
   $: drug = $page.url.searchParams.get("drug");
   $: condition = $page.url.searchParams.get("condition");
   $: allergie = $page.url.searchParams.get("allergie");
-
   $: isSearched = drug || condition || allergie ? true : false;
+
+  $: largePanel = false;
 </script>
 
-<SearchPanel {drug} {condition} {allergie} />
+<SearchPanel {drug} {condition} {allergie} bind:largePanel />
 {#if !isSearched}
   <NewsFeed />
   <FaqContainer />
   <Footer />
 {:else}
-  <DrugComparator />
+  <DrugComparator bind:largePanel />
 {/if}

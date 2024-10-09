@@ -9,7 +9,8 @@
   <button on:click class="flex flex-row gap-2 px-4 items-center justify-center h-full w-full rounded-lg {isFetching ? "cursor-default" : "hover:bg-cblueHover"} bg-cblue duration-200">
     {#if isFetching}
       <Spinner />
+    {:else}
+      <span class="font-poppins text-white"> Rechercher </span>
     {/if}
-    <span class="font-poppins text-white"> Rechercher </span>
   </button>
 </div>

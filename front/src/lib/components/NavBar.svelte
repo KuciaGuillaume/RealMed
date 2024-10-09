@@ -33,7 +33,7 @@
     <div class="flex items-center">
       <a href="/" class="font-poppins text-xl text-cblue font-semibold">RealMed</a>
     </div>
-    <div class="flex items-center">
+    <div class="relative flex items-center">
       {#if isLoggedIn}
         <!-- menu burger -->
         <button
@@ -54,30 +54,30 @@
         <!-- dropdown menu -->
         {#if isOpen}
           <div
-            class="absolute right-5 mt-48 w-48 bg-white rounded-md shadow-lg origin-top-right ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+            class="absolute right-0 top-10 w-48 bg-white rounded-md shadow-xl origin-top-right ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="options-menu"
             bind:this={dropdown}
           >
             <div class="py-1" role="none">
-              <a href="/profil" class="flex px-4 py-2 gap-2 hover:bg-gray-100">
-                <div class="w-6">
+              <a href="/profil" class="flex px-4 py-2 gap-5 hover:bg-gray-100">
+                <div class="h-full aspect-square flex items-center justify-start">
                   <Fa icon={faUser} class="text-cblue" size="lg" />
                 </div>
-                <span class="font-poppins text-sm text-gray-700 font-regular">Profil</span>
+                <span class="font-poppins text-sm text-gray-700">Profil</span>
               </a>
-              <a href="/favoris" class="flex px-4 py-2 gap-2 hover:bg-gray-100">
-                <div class="w-6">
+              <a href="/favoris" class="flex px-4 py-2 gap-4 hover:bg-gray-100">
+                <div class="h-full aspect-square items-center justify-start">
                   <Fa icon={faStar} class="text-cblue" size="lg" />
                 </div>
-                <span class="font-poppins text-sm text-gray-700 font-regular">Favoris</span>
+                <span class="font-poppins text-sm text-gray-700">Favoris</span>
               </a>
-              <a href="/logout" class="flex px-4 py-2 gap-2 hover:bg-gray-100">
-                <div class="w-6">
+              <a href="/logout" class="flex px-4 py-2 gap-4 hover:bg-gray-100">
+                <div class="h-full aspect-square  items-center justify-start">
                   <Fa icon={faRightFromBracket} class="text-cblue" size="lg" />
                 </div>
-                <span class="font-poppins text-sm text-gray-700 font-regular">Se déconnecter</span>
+                <span class="font-poppins text-sm text-gray-700">Se déconnecter</span>
               </a>
             </div>
           </div>

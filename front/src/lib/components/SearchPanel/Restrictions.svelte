@@ -114,7 +114,7 @@
           on:click={() => query=allergie.name} 
           class="flex flex-row w-full min-h-14 items-center justify-start p-2 px-4 hover:bg-gray-100 rounded-xl cursor-pointer gap-4">
           <div class="flex items-center justify-center h-full aspect-square">
-            <Fa icon={faNotesMedical} class="text-gray-500" size="lg" color={"#0279C2"} />
+            <Fa icon={faBug} class="text-gray-500" size="lg" color={"#0279C2"} />
           </div>
           <div class="flex flex-col h-full justify-center items-start flex-grow">
             <span class="font-poppins text-sm">{allergie.name}</span>

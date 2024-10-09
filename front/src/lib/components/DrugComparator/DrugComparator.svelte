@@ -1,13 +1,11 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import DrugList from "./DrugList.svelte";
-  import DonutChart from "./DonutChart.svelte";
-  import DrugItem from "./DrugItem.svelte";
   import StatLabel from "./StatLabel.svelte";
-  import Pellet from "../Pellet.svelte";
   import ListItem from "./ListItem.svelte";
-  import Layout from "../../../routes/+layout.svelte";
   import DonutChartSpec from "../DonutChartSpec.svelte";
+
+  export let largePanel : boolean = false;
 
   $: drugItems = [
     {
@@ -77,14 +75,14 @@
 
 <div 
   in:fly={{ duration: 300, y: 100, opacity: 0 }}
-  style="height: calc({innerHeight}px - 224px);"
+  style="{largePanel ? `height: calc(${innerHeight}px - 64px)` : `height: calc(${innerHeight}px - 224px)`}"
   class="w-screen bg-cgray flex flex-row">
   <div class="w-1/2 h-full">
     <DrugList bind:drugItems />
   </div>
   {#key drugItems}
     <div class="w-1/2 h-full pt-4 px-4">
-      <div class="flex flex-col size-full bg-white rounded-xl rounded-b-none border shadow-mds p-4 gap-4">
+      <div class="flex flex-col size-full bg-white rounded-xl rounded-b-none border shadow-mds p-4 gap-4 overflow-y-auto">
         <div>
           <h2 class="font-poppins"> Spécificités du médicament </h2>
           <div class="grid grid-cols-2 gap-2 w-full rounded-lg p-2 px-0">
@@ -97,7 +95,6 @@
             <StatLabel label={"Aspect"} value={"Comprimé rond, sécable"} />
             <StatLabel label={"Couleur"} value={"Blanc"} />
             <StatLabel label={"Indications fréquentes"} value={"Douleur, inflammation"} />
-            <StatLabel label={"Effets secondaires possibles"} value={"Nausées, maux de tête"} />
           </div>
         </div>
         <div class="w-full max-h-60 flex-row flex">
@@ -131,7 +128,7 @@
             <h2 class="font-poppins">
               Effets secondaires
             </h2>
-            <ul class="font-poppins text-xs gap-1 flex flex-col pt-1">
+            <ul class="font-poppins text-xs gap-1 flex flex-col pt-1 pb-4">
               <ListItem color={"green"} label={"Nausées"} />
               <ListItem color={"green"} label={"Vomissements"} />
               <ListItem color={"orange"} label={"Douleurs abdominales"} />
