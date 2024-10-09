@@ -6,12 +6,14 @@
   import Fa from "svelte-fa";
   import { faChevronRight, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { fly } from "svelte/transition";
+  import Spinner from "$lib/components/Spinner.svelte";
 
   let isPasswordVisible = false;
   let inputElement: HTMLInputElement | null = null;
   let inputValue: string = '';
   let isFocused = false;
   let isInvalidPassword = false;
+  let isLoading = false;
 
   $: passwordStrength = getPasswordStrength(inputValue);
   $: majusculeCount = inputValue.match(/[A-Z]/g)?.length || 0;
@@ -67,12 +69,28 @@
     return score;
   }
 
-  const createAnAccount = () => {
+  const createAnAccount = async () => {
+    isLoading = true;
     if (inputValue.length < 10 || majusculeCount < 1) {
       isInvalidPassword = true;
     } else {
-      // create account
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: $registerEmailStore,
+          password: inputValue
+        })
+      });
+      if (res.ok) {
+        goto('/');
+      } else {
+        alert('Une erreur est survenue lors de la création de votre compte.');
+      }
     }
+    isLoading = false;
   }
 
   onMount(() => {
@@ -141,7 +159,7 @@
                 bind:value={inputValue}
                 type="text"
                 class="w-full h-12 pl-4 outline p-2 outline-none rounded-lg border-none bg-transparent" 
-                placeholder="Saisissez votre adresse e-mail"
+                placeholder="Saisissez votre mot de passe"
               >
             {:else}
               <input 
@@ -152,7 +170,7 @@
                 bind:value={inputValue}
                 type="password" 
                 class="w-full h-12 pl-4 outline p-2 outline-none rounded-lg border-none bg-transparent" 
-                placeholder="Saisissez votre adresse e-mail"
+                placeholder="Saisissez votre mot de passe"
               >
             {/if}
             <div class="flex items-center justify-centerh-12 w-20 px-4">
@@ -180,7 +198,11 @@
           <button 
             on:click={createAnAccount}
             class="w-full h-12 bg-cblue text-white font-poppins rounded-lg hover:bg-cblueHover font-semibold">
-            Créer un compte
+            {#if !isLoading}
+              Créer un compte
+            {:else}
+              <Spinner />
+            {/if}
           </button>
         </div>
         <p class="font-poppins text-xs pt-2">

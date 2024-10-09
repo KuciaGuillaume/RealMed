@@ -6,12 +6,14 @@
   import Fa from "svelte-fa";
   import { faChevronRight, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   import { fly } from "svelte/transition";
+  import Spinner from "$lib/components/Spinner.svelte";
 
   let isPasswordVisible = false;
   let inputElement: HTMLInputElement | null = null;
   let inputValue: string = '';
   let isFocused = false;
   let isInvalidPassword = false;
+  let isLoading = false;
 
   $: if (inputValue) isInvalidPassword = false;
 
@@ -63,8 +65,29 @@
     return score;
   }
 
-  const createAnAccount = () => {
-    // check passord with backend
+  const login = async () => {
+
+    isLoading = true;
+
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: $registerEmailStore,
+        password: inputValue
+      }),
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      isInvalidPassword = true;
+      isLoading = false;
+      return;
+    } else {
+      goto('/');
+    }
+
+    isLoading = false;
+    
   }
 
   onMount(() => {
@@ -132,7 +155,7 @@
                 bind:value={inputValue}
                 type="text"
                 class="w-full h-12 pl-4 outline p-2 outline-none rounded-lg border-none bg-transparent" 
-                placeholder="Saisissez votre adresse e-mail"
+                placeholder="Saisissez votre mot de passe"
               >
             {:else}
               <input 
@@ -142,14 +165,18 @@
                 bind:value={inputValue}
                 type="password" 
                 class="w-full h-12 pl-4 outline p-2 outline-none rounded-lg border-none bg-transparent" 
-                placeholder="Saisissez votre adresse e-mail"
+                placeholder="Saisissez votre mot de passe"
               >
             {/if}
           </div>
           <button 
-            on:click={createAnAccount}
+            on:click={login}
             class="w-full h-12 bg-cblue text-white font-poppins rounded-lg hover:bg-cblueHover font-semibold">
-            Se connecter
+            {#if !isLoading}
+              Se connecter
+            {:else}
+              <Spinner />
+            {/if}
           </button>
         </div>
         <a href="/password_forgot" class="font-poppins text-xs pt-2 text-cblue hover:underline">

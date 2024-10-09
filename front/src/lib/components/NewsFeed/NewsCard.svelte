@@ -7,8 +7,6 @@
     imgLink: string;
   };
 
-  $: console.log(item);
-
 </script>
 
 <button class="flex flex-col bg-white shadow-md border rounded-xl h-42 p-4 z-0 min-w-[400px] gap-4 duration-200">

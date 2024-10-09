@@ -8,6 +8,7 @@
 		{ category: 'Category B', value: 25, color: '#fde68a' },
 		{ category: 'Category C', value: 25, color: '#fecaca' }
 	];
+	export let unit: string = "";
 
 	let total = data.reduce((acc, { value }) => acc + value, 0.000001);
 	let cumulativePercentage = 0;
@@ -116,7 +117,7 @@
 			class="absolute h-8 rounded-md flex flex-row items-center bg-white overflow-hidden border drop-shadow-md text-sm z-40 whitespace-nowrap"
 		>
 			<div class="h-full px-2 flex justify-center items-center bg-gray-200">
-				<span> {displayValue} </span>
+				<span> {displayValue} {unit} </span>
 			</div>
 			<span class="px-2"> {hoveredCategory} </span>
 		</div>

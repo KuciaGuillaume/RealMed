@@ -9,67 +9,90 @@
   import Fa from "svelte-fa";
   import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
+  import { selectedDrugStore } from "$lib/store";
 
-  let selectedDrug = "Doliprane";
+  let selectedDrug  = "";
   let selectedCondition = "";
   let selectedAllergie = "";
+  let drugs : { name: string, shortDescription: string }[] = [];
 
-  export let drug : string | null;
-  export let condition : string | null;
-  export let allergie : string | null;
-  export let largePanel = false;
+  export let isSearched = false;
+  export let isLargePanel = false;
+  export let drugData : DrugResult[] | null = null;
 
   let isFetching = false;
   let isMounted = false;
+  let fetchedOnce = false;
 
-  $: isSearched = (drug || condition || allergie) ? true : false;
-
-  const handleSearch = () => {
+  const handleSearch = async () => {
     isFetching = true;
-    setTimeout(() => {
-      const params = new URLSearchParams();
-  
-      if (selectedDrug) {
-        params.append('drug', selectedDrug);
+    const res = await fetch(`/api/drug?drugName=${selectedDrug}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
       }
-      if (selectedCondition) {
-        params.append('condition', selectedCondition);
-      }
-      if (selectedAllergie) { 
-        params.append('allergie', selectedAllergie);
-      }
-  
-      if (params.toString() === '') {
-        params.append('drug', 'Doliprane');
-      }
-  
-      goto(`?${params.toString()}`);
+    });
+    if (!res.ok) {
       isFetching = false;
-    }, 1500);
+      return;
+    }
+    drugData = await res.json();
+
+    const params = new URLSearchParams();
+    if (selectedDrug) {
+      params.append('drug', selectedDrug);
+    }
+    if (selectedCondition) {
+      params.append('condition', selectedCondition);
+    }
+    if (selectedAllergie) { 
+      params.append('allergie', selectedAllergie);
+    }
+
+    if (params.toString() === '') {
+      params.append('drug', 'Doliprane');
+    }
+
+    goto(`?${params.toString()}`);
+    isFetching = false;
+    selectedDrugStore.set("");
+    fetchedOnce = true;
   }
 
-  const handleLargePanel = () => {
-    largePanel = !largePanel;
-  }
-
-  onMount(() => {
+  onMount(async () => {
     isMounted = true;
+
+    if (isSearched) isFetching = true;
+    const res = await fetch('/api/drugs', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    drugs = await res.json();
+
+    if (isSearched && !fetchedOnce) {
+      selectedDrug = drugs.find((drug) => drug.name.toLowerCase() === (drug.name || "").toLowerCase())?.name || "";
+      handleSearch();
+    }
   });
 
 </script>
 
-<div class="relative flex justify-center w-full duration-200  {isSearched ? largePanel ? 'h-0' : 'h-40 bg-white border-b' : 'h-96 bg-cgray'}">
+<div class="relative flex justify-center w-full duration-200  {isSearched ? isLargePanel ? 'h-0' : 'h-40 bg-white border-b' : 'h-96 bg-cgray'}">
   <div class="flex z-0 absolute right-0 bottom-0">
-    <img src="/search_illustration.png" alt="search_illustration" class="{isSearched ? largePanel ? 'h-0' : 'h-40' : 'h-96'} duration-200 aspect-auto">
+    <img src="/search_illustration.png" alt="search_illustration" class="{isSearched ? isLargePanel ? 'h-0' : 'h-40' : 'h-96'} duration-200 aspect-auto">
   </div>
-  <div class="flex z-10 flex-col max-w-[60rem] w-full p-10">
-    {#if !isSearched}
-      <div out:slide={{ duration: 300 }} in:slide={{ duration: 300 }} class="flex flex-col gap-2">
-        <h2 class="font-poppins text-3xl font-semibold"> Découvrez les médicaments que vous prenez au quotidien.  </h2>
-        <h3 class="font-poppins text-black/70"> Analysez les compositions et prenez soin de votre bien-être. </h3>
-      </div>
-    {/if}
-    {#if isMounted && (!largePanel || !isSearched)}
+  {#if isMounted && (!isLargePanel || !isSearched)}
+    <div 
+      in:fly={{ duration: 300, y: -10 }}
+      class="flex flex-col max-w-[60rem] w-full p-10 z-20">
+      {#if !isSearched}
+        <div out:slide={{ duration: 300 }} in:slide={{ duration: 300 }} class="flex flex-col gap-2">
+          <h2 class="font-poppins text-3xl font-semibold"> Découvrez les médicaments que vous prenez au quotidien.  </h2>
+          <h3 class="font-poppins text-black/70"> Analysez les compositions et prenez soin de votre bien-être. </h3>
+        </div>
+      {/if}
       <div 
         in:fly={{ duration: 300, y: -10 }} class="flex flex-row gap-4">
         {#if isSearched}
@@ -83,8 +106,8 @@
         {/if}
         <div
           in:fly={{ duration: 300, y: -10 }}
-          class="flex flex-row w-full h-[4rem] bg-white rounded-xl shadow-md p-1 border relative gap-2 z-10 {isSearched ? '': 'mt-6'} duration-200">
-          <SeachButtonSection bind:query={selectedDrug} />
+          class="flex flex-row w-full h-[4rem] bg-white rounded-xl shadow-md p-1 border relative gap-2 z-20 {isSearched ? '': 'mt-6'} duration-200">
+          <SeachButtonSection bind:query={selectedDrug} bind:drugs />
           <Separator />
           <PersonSpecificity bind:query={selectedCondition} />
           <Separator />
@@ -92,13 +115,6 @@
           <SearchButton on:click={handleSearch} bind:isFetching />
         </div>
       </div>
-    {/if}
-  </div>
-  {#if isSearched}
-    <button 
-      on:click={handleLargePanel} 
-      class="absolute w-20 flex z-30 items-center justify-center h-5 border rounded-lg  bg-white top-full -translate-y-1/2">
-      <Fa icon={faArrowLeft} class="flex z-0 {largePanel ? '-rotate-90' : 'rotate-90'} cursor-pointer duration-200" size="xs" />
-    </button>
+    </div>
   {/if}
 </div>

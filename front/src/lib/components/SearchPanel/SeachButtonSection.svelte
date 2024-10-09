@@ -1,54 +1,21 @@
 <script lang="ts">
-  import { tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import Fa from 'svelte-fa';
   import { faNotesMedical, faSearch, faX } from '@fortawesome/free-solid-svg-icons';
   import { fly } from 'svelte/transition';
 
   let isSelected = false;
-  let inputEl: HTMLInputElement | null = null;
+  let inputElement: HTMLInputElement | null = null;
+  export let drugs : { name: string, shortDescription: string}[] = [];
+  
   export let query = '';
-
-  const medics = [
-    {
-      name: "Doliprane",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    },
-    {
-      name: "Ibuprofène",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    },
-    {
-      name: "Paracétamol",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    },
-    {
-      name: "Aspirine",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    },
-    {
-      name: "Efferalgan",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    },
-    {
-      name: "Spasfon",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    },
-    {
-      name: "Dafalgan",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    },
-    {
-      name: "Advil",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-    }
-  ]
 
   const handleClick = async () => {
     isSelected = !isSelected;
 
     if (isSelected) {
       await tick();
-      inputEl?.focus();
+      inputElement?.focus();
     }
   };
 
@@ -67,6 +34,15 @@
       },
     };
   }
+
+  const handleKeyDown = (event: any) => {
+    if (event.code === "Space") {
+      event.stopPropagation();
+      event.preventDefault();
+      query = query + " ";
+    }
+  };
+
 </script>
 
 <button
@@ -79,11 +55,12 @@
   <div class="flex flex-col h-full justify-center items-start flex-grow">
     <span class="font-poppins text-xs text-gray-500">Médicament</span>
     {#if !isSelected}
-      <span class="font-poppins text-sm">{query == "" ? "Doliprane" : query}</span>
+      <span class="font-poppins text-sm line-clamp-1 text-left {query == "" ? "text-gray-600" : ""}">{query == "" ? "Que cherchez-vous ?" : query}</span>
     {:else}
       <input
-        bind:this={inputEl}
+        bind:this={inputElement}
         bind:value={query}
+        on:keydown={handleKeyDown}
         placeholder="Que cherchez-vous ?"
         class="font-poppins text-sm w-full outline-none bg-transparent"
       />
@@ -99,17 +76,17 @@
   {#if isSelected}
     <div in:fly={{ duration: 100, y: 10 }} out:fly={{ duration: 100, y: 10 }} class="absolute top-full left-0 pt-4 w-40">
       <div class="flex flex-col w-[450px] max-h-60 h-fit rounded-xl bg-white shadow-md border overflow-hidden p-2 overflow-y-scroll gap-2">
-        {#each medics as medic}
-          {#if query == "" || medic.name.toLowerCase().includes(query.toLowerCase())}
+        {#each drugs as drug}
+          {#if query == "" || drug.name.toLowerCase().includes(query.toLowerCase())}
           <button
-            on:click={() => query=medic.name} 
-            class="flex flex-row w-full min-h-14 items-center justify-start p-2 px-4 hover:bg-gray-100 rounded-xl cursor-pointer gap-4">
+            on:click={() => query=drug.name} 
+            class="flex flex-row w-full min-h-20 items-center justify-start p-2 px-4 hover:bg-gray-100 rounded-xl cursor-pointer gap-4">
             <div class="flex items-center justify-center h-full aspect-square">
               <Fa icon={faNotesMedical} class="text-gray-500" size="lg" color={"#0279C2"} />
             </div>
             <div class="flex flex-col h-full justify-center items-start flex-grow">
-              <span class="font-poppins text-sm">{medic.name}</span>
-              <span class="font-poppins text-xs text-gray-500">{medic.description}</span>
+              <span class="font-poppins text-sm text-left">{drug.name}</span>
+              <span class="font-poppins text-xs text-gray-500 text-left">{drug.shortDescription}</span>
             </div>
           </button>
           {/if}

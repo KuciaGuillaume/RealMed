@@ -4,145 +4,237 @@
   import StatLabel from "./StatLabel.svelte";
   import ListItem from "./ListItem.svelte";
   import DonutChartSpec from "../DonutChartSpec.svelte";
+  import { selectedDrugStore } from "$lib/store";
+  import Fa from "svelte-fa";
+  import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+  import DrugItem from "./DrugItem.svelte";
 
-  export let largePanel : boolean = false;
-
-  $: drugItems = [
-    {
-      name: "Doliprane 1000 mg",
-      description: "Analgésique et antipyrétique indiqué pour le traitement symptomatique de la douleur et de la fièvre.",
-      imgLink: "https://www.pharma-gdd.com/media/cache/resolve/product_show/333430303933353935353833382d646f6c697072616e652d313030306d672d382d636f6d7072696d657313e8670f.jpg",
-      score: 80,
-      isSelected: true,
-    },
-    {
-      name: "Nurofen 200 mg",
-      description: "Anti-inflammatoire non stéroïdien utilisé pour soulager les douleurs légères à modérées et la fièvre.",
-      imgLink: "https://www.pharma-gdd.com/media/cache/resolve/product_show/6e75726f66656e2d3230302d6d672d636f6d7072696d6500a64a74.jpg",
-      score: 70,
-      isSelected: false
-    },
-    {
-      name: "Spasfon",
-      description: "Antispasmodique indiqué dans le traitement des douleurs liées aux troubles fonctionnels du tube digestif et des voies biliaires.",
-      imgLink: "https://www.pharma-gdd.com/media/cache/resolve/product_show/746576612d73706173666f6e2d33302d636f6d7072696d65732d66616365e0be8e81.jpg",
-      score: 60,
-      isSelected: false,
-    },
-    {
-      name: "Smecta",
-      description: "Pansement digestif utilisé dans le traitement symptomatique des diarrhées aiguës chez l'enfant et l'adulte.",
-      imgLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkQJhV1Cm3x1YC07KKkIqxmKfd3OVc1e2nvw&s",
-      score: 50,
-      isSelected: false,
-    },
-    {
-      name: "Gaviscon",
-      description: "Médicament indiqué pour soulager les symptômes du reflux gastro-œsophagien tels que les brûlures d'estomac.",
-      imgLink: "https://www.illicopharma.com/75321/gaviscon-pro-10-sachets-dose.jpg",
-      score: 40,
-      isSelected: false,
-    },
-    {
-      name: "Imodiumcaps 2 mg",
-      description: "Antidiarrhéique utilisé pour traiter les symptômes des diarrhées aiguës passagères chez l'adulte et l'enfant de plus de 15 ans.",
-      imgLink: "https://www.pharma-coquillages.com/5907-large_default/imodiumcaps-2-mg-12-gelules.jpg",
-      score: 30,
-      isSelected: false,
-    },
-    {
-      name: "Efferalgan 500 mg",
-      description: "Analgésique et antipyrétique pour le traitement symptomatique des douleurs et/ou de la fièvre.",
-      imgLink: "https://www.pharma-gdd.com/media/cache/resolve/product_show/757073612d6566666572616c67616e2d6d65642d3530306d672d32342d636f6d7072696d65732d66616365c84c5a2b.jpg",
-      score: 20,
-      isSelected: false,
-    },
-    {
-      name: "Voltarène 1% Gel",
-      description: "Anti-inflammatoire non stéroïdien pour application cutanée, utilisé dans le traitement local des douleurs articulaires et musculaires.",
-      imgLink: "https://www.pharma-gdd.com/media/cache/resolve/product_show/67736b2d766f6c746172656e652d656d756c67656c2d312d313030672d66616365285f5df9.jpg",
-      score: 10,
-      isSelected: false,
-    },
-  ];
-
-  $: drug = drugItems.find((drug) => drug.isSelected) || drugItems[0];
+  export let drugData: DrugResult[] | null = null;
+  export let isLargePanel: boolean;
+  export let isSearched: boolean;
 
   let innerHeight : number = 0;
+
+  // Fonction pour parser les temps
+  function parseTime(timeStr : string) {
+    let timeInMinutes = 0;
+
+    if (timeStr.includes('-')) {
+      // Plage de valeurs
+      let parts = timeStr.split('-');
+      let minPart = parseFloat(parts[0]);
+      let maxPart = parseFloat(parts[1]);
+      // Vérifier l'unité
+      if (timeStr.includes('h')) {
+        // Convertir en minutes
+        timeInMinutes = ((minPart + maxPart) / 2) * 60;
+      } else {
+        timeInMinutes = (minPart + maxPart) / 2;
+      }
+    } else {
+      // Valeur unique
+      let value = parseFloat(timeStr);
+      if (timeStr.includes('h')) {
+        timeInMinutes = value * 60;
+      } else {
+        timeInMinutes = value;
+      }
+    }
+
+    return timeInMinutes;
+  }
+
+  const getScore = (drug : DrugResult) => {
+    // 1. Score des effets secondaires
+    const totalEffects = drug.secondaryEffectsDetails.length;
+    const totalSeverity = drug.secondaryEffectsDetails.reduce(
+      (sum, effect) => sum + effect.severity,
+      0
+    );
+    const averageSeverity = totalSeverity / totalEffects;
+    
+    // Sévérité va de 1 à 3, on inverse pour que moins de sévérité donne un score plus élevé
+    const sideEffectsScore = ((3 - averageSeverity) / (3 - 1)) * 100;
+    
+    // 2. Score du temps d'efficacité
+    const efficiencyTimeInMinutes = parseTime(drug.efficiencyTime);
+    const minEfficiencyTime = 15; // Basé sur les données fournies
+    const maxEfficiencyTime = 60;
+    const efficiencyTimeScore = ((maxEfficiencyTime - efficiencyTimeInMinutes) / (maxEfficiencyTime - minEfficiencyTime)) * 100;
+    
+    // 3. Score de la durée d'action
+    const durationTimeInMinutes = parseTime(drug.durationTime);
+    const minDurationTime = 180; // 3 heures en minutes
+    const maxDurationTime = 480; // 8 heures en minutes
+    const durationTimeScore = ((durationTimeInMinutes - minDurationTime) / (maxDurationTime - minDurationTime)) * 100;
+    
+    // 4. Score du mode d'administration
+    let administrationScore = 0;
+    if (drug.format === 'Oral') {
+      administrationScore = 100;
+    } else if (drug.format === 'Rectal') {
+      administrationScore = 50;
+    } else {
+      administrationScore = 70; // Par défaut
+    }
+    
+    // 5. Score de la taille
+    let sizeScore = 0;
+    if (drug.size === 'Small') {
+      sizeScore = 100;
+    } else if (drug.size === 'Medium') {
+      sizeScore = 70;
+    } else if (drug.size === 'Large') {
+      sizeScore = 40;
+    } else {
+      sizeScore = 70; // 'N/A' ou autres
+    }
+    
+    // Pondérations (doivent totaliser 1)
+    const weights = {
+      sideEffects: 0.4,
+      efficiencyTime: 0.2,
+      durationTime: 0.1,
+      administration: 0.1,
+      size: 0.2,
+    };
+    
+    // Calcul du score total
+    const totalScore =
+      sideEffectsScore * weights.sideEffects +
+      efficiencyTimeScore * weights.efficiencyTime +
+      durationTimeScore * weights.durationTime +
+      administrationScore * weights.administration +
+      sizeScore * weights.size;
+    
+    return Number(totalScore.toFixed(0));
+  };
+
+  $: drugItems = (() => {
+    if (!drugData) return [];
+
+    const firstDrug = drugData[0];
+
+    const sortedDrugs = drugData.slice(1).map((med) => ({
+      name: med.name || "Nom non disponible",
+      description: med.shortDescription || "Pas de description disponible",
+      imgLink: med.imageLink || "Pas d'image disponible",
+      score: getScore(med),
+      isSelected: false,
+      data: med
+    })).sort((a, b) => b.score - a.score);
+
+    return [
+      {
+        name: firstDrug.name || "Nom non disponible",
+        description: firstDrug.shortDescription || "Pas de description disponible",
+        imgLink: firstDrug.imageLink || "Pas d'image disponible",
+        score: getScore(firstDrug),
+        isSelected: false,
+        data: firstDrug
+      },
+      ...sortedDrugs
+    ];
+  })();
+
+  $: drug = drugItems.find((item) => item.name === $selectedDrugStore)?.data ?? drugItems[0]?.data;
+  $: percentOfLowSeverity = drug?.secondaryEffectsDetails.filter((effect) => effect.severity == 1).length / drug?.secondaryEffectsDetails.length * 100;
+  $: percentOfMediumSeverity = drug?.secondaryEffectsDetails.filter((effect) => effect.severity == 2).length / drug?.secondaryEffectsDetails.length * 100;
+  $: percentOfHighSeverity = drug?.secondaryEffectsDetails.filter((effect) => effect.severity == 3).length / drug?.secondaryEffectsDetails.length * 100;
 </script>
 
 <svelte:window bind:innerHeight />
 
 <div 
   in:fly={{ duration: 300, y: 100, opacity: 0 }}
-  style="{largePanel ? `height: calc(${innerHeight}px - 64px)` : `height: calc(${innerHeight}px - 224px)`}"
-  class="w-screen bg-cgray flex flex-row">
-  <div class="w-1/2 h-full">
-    <DrugList bind:drugItems />
-  </div>
-  {#key drugItems}
-    <div class="w-1/2 h-full pt-4 px-4">
-      <div class="flex flex-col size-full bg-white rounded-xl rounded-b-none border shadow-mds p-4 gap-4 overflow-y-auto">
-        <div>
-          <h2 class="font-poppins"> Spécificités du médicament </h2>
-          <div class="grid grid-cols-2 gap-2 w-full rounded-lg p-2 px-0">
-            <StatLabel label={"Délai d'action"} value={"15 min"} />
-            <StatLabel label={"Taille du médicament"} value={"10 mm"} />
-            <StatLabel label={"Forme d'administration"} value={"Gélule"} />
-            <StatLabel label={"Méthode d'administration"} value={"Oral"} />
-            <StatLabel label={"Durée d'efficacité"} value={"4-6 heures"} />
-            <StatLabel label={"Conditionnement"} value={"Blister"} />
-            <StatLabel label={"Aspect"} value={"Comprimé rond, sécable"} />
-            <StatLabel label={"Couleur"} value={"Blanc"} />
-            <StatLabel label={"Indications fréquentes"} value={"Douleur, inflammation"} />
-          </div>
-        </div>
-        <div class="w-full max-h-60 flex-row flex">
-          <div class="h-full w-1/2">
-            <h2 class="font-poppins"> Sévérité des effets secondaires </h2>
-            <div class="h-full aspect-square">
-              <DonutChartSpec 
-                label={null}
-                data={[
-                  {
-                    category: "low risk",
-                    value: 20,
-                    color: '#32de84'
-  
-                  },
-                  {
-                    category: 'medium risk',
-                    value: 40,
-                    color: '#f7b52b'
-                  },
-                  {
-                    category: 'high risk',
-                    value: 40,
-                    color: '#f54242'
-                  }
-                ]}
-              />
+  style="{isLargePanel ? `height: calc(${innerHeight}px - 64px)` : `height: calc(${innerHeight}px - 224px)`}"
+  class="w-screen bg-cgray flex flex-col">
+  {#if isSearched}
+    <div class="w-full flex justify-center min-h-10 items-center">
+      <button 
+        on:click={() => isLargePanel = !isLargePanel} 
+        class="w-20 flex z-10 items-center justify-center h-5 border rounded-lg  bg-white">
+        <Fa icon={faArrowLeft} class="flex z-0 {isLargePanel ? '-rotate-90' : 'rotate-90'} cursor-pointer duration-200" size="xs" />
+      </button>
+    </div>
+  {/if}
+  <div class="w-full flex flex-row h-[calc(100%-40px)]">
+    <div class="w-1/2 h-full">
+      <DrugList bind:drugItems bind:selectedItem={$selectedDrugStore} />
+    </div>
+    {#key drug}
+      {#if drug}
+        <div class="w-1/2 h-full pt-4 px-4">
+          <div class="flex flex-col size-full bg-white rounded-xl rounded-b-none border shadow-mds p-4 overflow-y-auto">
+            <div 
+              in:fly|global={{ duration: 400, y: 100, opacity: 0 }}
+              class="flex flex-col size-full gap-4">
+              <div>
+                <h2 class="font-poppins"> Spécificités du médicament </h2>
+                <div class="grid grid-cols-2 gap-2 w-full rounded-lg p-2 px-0">
+                  <StatLabel label={"Délai d'action"} value={drug?.durationTime ?? 'N/A'} />
+                  <StatLabel label={"Taille du médicament"} value={drug?.size ?? 'N/A'} />
+                  <StatLabel label={"Forme d'administration"} value={drug?.format ?? "N/A"} />
+                  <StatLabel label={"Méthode d'administration"} value={drug?.administration ?? "N/A"} />
+                  <StatLabel label={"Durée d'efficacité"} value={drug?.efficiencyTime ?? "N/A"} />
+                  <StatLabel label={"Conditionnement"} value={"N/A"} />
+                  <StatLabel label={"Aspect"} value={drug?.aspect ?? "N/A"} />
+                  <StatLabel label={"Couleur"} value={drug?.color ?? "N/A"} />
+                  <StatLabel label={"Indications fréquentes"} value={drug?.commonAffliction ?? "N/A"} />
+                </div>
+              </div>
+              <div class="w-full max-h-[15rem] flex-row flex">
+                <div class="h-full w-1/2">
+                  <h2 class="font-poppins"> Sévérité des effets secondaires </h2>
+                  <div class="h-full aspect-square -mt-8">
+                    <DonutChartSpec 
+                      label={null}
+                      data={[
+                        {
+                          category: "Faible risque",
+                          value: percentOfLowSeverity,
+                          color: '#32de84'
+        
+                        },
+                        {
+                          category: 'Risque moyen',
+                          value: percentOfMediumSeverity,
+                          color: '#f7b52b'
+                        },
+                        {
+                          category: 'Risque élevé',
+                          value: percentOfHighSeverity,
+                          color: '#f54242'
+                        }
+                      ]}
+                      unit="%"
+                    />
+                  </div>
+                </div>
+                <div class="h-full w-1/2">
+                  <h2 class="font-poppins">
+                    Effets secondaires
+                  </h2>
+                  <ul class="font-poppins text-xs gap-1 flex flex-col pt-1 pb-4">
+                    {#each drug?.secondaryEffectsDetails as secondaryEffect}
+                      <ListItem color={
+                        secondaryEffect.severity == 1
+                        ? 'green' : secondaryEffect.severity == 2
+                        ? 'orange' : 'red'} label={secondaryEffect.name} />
+                    {/each}
+                  </ul>
+                </div>
+              </div>
+              <div class="w-full flex flex-col gap-2 -mt-10 pb-4">
+                <h3 class="font-poppins"> Conseilles d'utilisation:  </h3>
+                <p class="font-poppins text-xs">
+                  {drug?.usage}
+                </p>
+              </div>
             </div>
           </div>
-          <div class="h-full w-1/2">
-            <h2 class="font-poppins">
-              Effets secondaires
-            </h2>
-            <ul class="font-poppins text-xs gap-1 flex flex-col pt-1 pb-4">
-              <ListItem color={"green"} label={"Nausées"} />
-              <ListItem color={"green"} label={"Vomissements"} />
-              <ListItem color={"orange"} label={"Douleurs abdominales"} />
-              <ListItem color={"orange"} label={"Somnolence"} />
-              <ListItem color={"orange"} label={"Éruption cutanée"} />
-              <ListItem color={"orange"} label={"Démangeaisons"} />
-              <ListItem color={"red"} label={"Réactions allergiques sévères (œdème de Quincke, choc anaphylactique)"} />
-              <ListItem color={"red"} label={"Troubles hépatiques (toxicité hépatique en cas de surdosage)"} />
-              <ListItem color={"red"} label={"Thrombopénie (diminution des plaquettes)"} />
-              <ListItem color={"red"} label={"Leucopénie (diminution des globules blancs)"} />
-            </ul>
-          </div>
         </div>
-      </div>
-    </div>
-  {/key}
+      {/if}
+    {/key}
+  </div>
 </div>

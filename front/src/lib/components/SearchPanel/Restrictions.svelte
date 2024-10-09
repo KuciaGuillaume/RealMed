@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { tick } from 'svelte';
   import Fa from 'svelte-fa';
-  import { faBug, faNotesMedical, faPerson, faSearch, faUser, faUserGroup, faX } from '@fortawesome/free-solid-svg-icons';
+  import { faBug, faX } from '@fortawesome/free-solid-svg-icons';
   import { fly } from 'svelte/transition';
+  import { allergyToCode, codeToAllergy } from '$lib/functions';
 
   let isSelected = false;
   export let query = "";
@@ -97,7 +97,7 @@
   </div>
   <div class="flex flex-col h-full justify-center items-start flex-grow">
     <span class="font-poppins text-xs text-gray-500 text-left">Allergie</span>
-    <span class="font-poppins text-sm">{query == "" ? "Aucune" : query}</span>
+    <span class="font-poppins text-sm">{query == "" ? "Aucune" : codeToAllergy(query)}</span>
   </div>
   {#if !isSelected && query != ""}
     <div class="h-full aspect-square flex items-center justify-center">
@@ -111,7 +111,7 @@
       <div class="flex flex-col w-[450px] max-h-60 h-fit rounded-xl bg-white shadow-md border overflow-hidden p-2 overflow-y-scroll gap-2">
         {#each allergies as allergie}
         <button
-          on:click={() => query=allergie.name} 
+          on:click={() => query=allergyToCode(allergie.name)} 
           class="flex flex-row w-full min-h-14 items-center justify-start p-2 px-4 hover:bg-gray-100 rounded-xl cursor-pointer gap-4">
           <div class="flex items-center justify-center h-full aspect-square">
             <Fa icon={faBug} class="text-gray-500" size="lg" color={"#0279C2"} />

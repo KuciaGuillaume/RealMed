@@ -3,7 +3,7 @@
   import Fa from "svelte-fa";
   import { faUser, faStar, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
-  let isLoggedIn = true; // ! Development purpose only
+  let isLoggedIn = false; // ! Development purpose only
   let isOpen = false;
 
   const toggleMenu = (event: { stopPropagation: () => void }) => {

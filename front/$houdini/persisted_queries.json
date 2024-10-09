@@ -1,0 +1,3 @@
+{
+    "858fe25de70484361806df79024a8b770026dd0b39c32041d54983a0025670a3": "query GetAllUsers {\n  users {\n    uuid\n    email\n    created_at\n  }\n}\n"
+}

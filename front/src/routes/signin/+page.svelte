@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { registerEmailStore } from "$lib/store";
+  import Spinner from "$lib/components/Spinner.svelte";
+  import { isLoggerStore, registerEmailStore } from "$lib/store";
   import { faCheck } from "@fortawesome/free-solid-svg-icons";
   import Fa from "svelte-fa";
   import { fly } from "svelte/transition";
@@ -8,12 +9,13 @@
   let inputValue: string = '';
   let errorMessage: string = '';
   let changed = false;
+  let isLoading = false;
 
   $: if (inputValue) {
     changed = true;
   }
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     changed = false;
 
@@ -25,10 +27,22 @@
       errorMessage = '';
       registerEmailStore.set(inputValue);
 
-      // if user dot exist
-      goto('/register');
-      // else
-      // goto('/login')
+      isLoading = true;
+
+      const res = await fetch(`/api/checkUser?username=${inputValue}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.ok) {
+        goto('/login');
+      } else {
+        goto('/register');
+      }
+
+      isLoading = false;
     }
   }
 
@@ -86,7 +100,11 @@
           <button 
             on:click={handleContinue}
             class="w-full h-12 bg-cblue text-white font-poppins rounded-lg hover:bg-cblueHover font-semibold">
-            Continuer
+            {#if !isLoading}
+              Continuer
+            {:else}
+              <Spinner/>
+            {/if}
           </button>
         </div>
         <p class="font-poppins text-xs pt-4">
