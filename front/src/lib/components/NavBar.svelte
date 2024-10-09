@@ -3,7 +3,7 @@
   import Fa from "svelte-fa";
   import { faUser, faStar, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
-  let isLoggedIn = true; // ! Development purpose only
+  let isLoggedIn = false; // ! Development purpose only
   let isOpen = false;
 
   const toggleMenu = (event: { stopPropagation: () => void }) => {
@@ -84,11 +84,11 @@
         {/if}
       {:else}
         <a
-          href="/login"
+          href="/signin"
           class="p-2 rounded-lg font-poppins text-sm font-medium text-white bg-cblue hover:bg-cblueHover"
           >Se connecter</a
         >
-        <a href="/register" class="font-poppins ml-4 text-sm font-medium text-gray-500"
+        <a href="/signin" class="font-poppins ml-4 text-sm font-medium text-gray-500"
           >S'inscrire</a
         >
       {/if}

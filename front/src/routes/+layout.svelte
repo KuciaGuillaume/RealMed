@@ -1,10 +1,12 @@
 <script>
   import NavBar from "$lib/components/NavBar.svelte";
   import "../app.css";
-  import Footer from "$lib/components/Footer.svelte";
+  import { page } from "$app/stores";
 </script>
 
 <div class="flex flex-col w-full">
-  <NavBar />
+  {#if $page.url.pathname !== "/signin" && $page.url.pathname !== "/register" && $page.url.pathname != "/login"}
+    <NavBar />
+  {/if}
   <slot />
 </div>
