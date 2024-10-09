@@ -24,6 +24,16 @@ class Molecule
      */
     private $Medicine;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $commonAffliction;
+
     public function __construct()
     {
         $this->Medicine = new ArrayCollection();
@@ -60,6 +70,30 @@ class Molecule
                 $medicine->setMolecule(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCommonAffliction(): ?string
+    {
+        return $this->commonAffliction;
+    }
+
+    public function setCommonAffliction(?string $commonAffliction): self
+    {
+        $this->commonAffliction = $commonAffliction;
 
         return $this;
     }

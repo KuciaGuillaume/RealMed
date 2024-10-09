@@ -1,11 +1,22 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
+        server_version: '13'
         use_savepoints: true
+        mapping_types:
+            _text: text
+            one_time_token_type: string
+            code_challenge_method: string
+            aal_level: string
+            regclass: string
+            _user_defined_filter: string
+            regrole: string
+            factor_type: string
+            enum: string
+            factor_status: string
+        types:
+            factor_type: App\Doctrine\FactorType
+
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware

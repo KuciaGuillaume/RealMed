@@ -33,7 +33,6 @@ class AuthenticatorCustomAuthenticator extends AbstractLoginFormAuthenticator
     {
         $username = $request->request->get('username', '');
         $password = $request->request->get('password', '');
-
         $request->getSession()->set(Security::LAST_USERNAME, $username);
 
         return new Passport(
@@ -50,7 +49,6 @@ class AuthenticatorCustomAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
         return new RedirectResponse($this->urlGenerator->generate('home'));
     }
 
