@@ -94,6 +94,16 @@ class Medicine
      */
     private $name;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $imageUrl;
+
+    /**
+     * @ORM\Column(type="string", length=1600, nullable=true)
+     */
+    private $description;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -310,5 +320,34 @@ class Medicine
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): self
+    {
+        $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

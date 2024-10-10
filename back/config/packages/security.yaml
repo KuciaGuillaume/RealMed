@@ -15,20 +15,34 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        # Pare-feu pour les routes de l'API avec JWT
+        api:
+            pattern: ^/api
+            stateless: true
+            provider: app_user_provider
+            jwt: ~  # Utilise le JWT pour l'authentification sur l'API
+
+        # Pare-feu pour les pages classiques (ex. pour les administrateurs)
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Security\AuthenticatorCustomAuthenticator
-            entry_point: App\Security\AuthenticatorCustomAuthenticator
             form_login:
                 login_path: login
                 check_path: login
+                username_parameter: username
+                password_parameter: password
             logout:
                 path: app_logout
-                target: home
+                target: login
 
     access_control:
-    - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/profile, roles: ROLE_USER }
+        # Autoriser l'accès à la route de login API sans authentification
+        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Exiger une authentification pour toutes les autres routes API
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        # Restreindre l'accès aux routes de l'administrateur
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Autoriser l'accès à la page de login classique sans authentification
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # Autoriser l'accès à la déconnexion sans authentification
+        - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -34,9 +34,20 @@ class Molecule
      */
     private $commonAffliction;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $allergies;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=SecondaryEffect::class, mappedBy="Molecule")
+     */
+    private $secondaryEffects;
+
     public function __construct()
     {
         $this->Medicine = new ArrayCollection();
+        $this->secondaryEffects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -96,5 +107,49 @@ class Molecule
         $this->commonAffliction = $commonAffliction;
 
         return $this;
+    }
+
+    public function getAllergies(): ?string
+    {
+        return $this->allergies;
+    }
+
+    public function setAllergies(?string $allergies): self
+    {
+        $this->allergies = $allergies;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SecondaryEffect>
+     */
+    public function getSecondaryEffects(): Collection
+    {
+        return $this->secondaryEffects;
+    }
+
+    public function addSecondaryEffect(SecondaryEffect $secondaryEffect): self
+    {
+        if (!$this->secondaryEffects->contains($secondaryEffect)) {
+            $this->secondaryEffects[] = $secondaryEffect;
+            $secondaryEffect->addMolecule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSecondaryEffect(SecondaryEffect $secondaryEffect): self
+    {
+        if ($this->secondaryEffects->removeElement($secondaryEffect)) {
+            $secondaryEffect->removeMolecule($this);
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }
