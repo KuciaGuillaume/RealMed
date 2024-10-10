@@ -7,6 +7,7 @@ use App\Entity\SecondaryEffect;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
@@ -52,12 +53,6 @@ class HomeController extends AbstractController
 
         // Récupère l'utilisateur connecté, si disponible
         $user = $this->getUser();
-        $isFavorite = false;
-
-        // Si l'utilisateur est connecté, vérifie si le médicament est en favori
-        if ($user) {
-            $isFavorite = $user->getFavs()->contains($medicine);
-        }
 
         // Récupération des effets secondaires via la molécule
         $molecule = $medicine->getMolecule();
@@ -89,7 +84,7 @@ class HomeController extends AbstractController
             'imageLink' => $medicine->getImageLink(),
             'shortDescription' => $medicine->getShortDescription(),
             'usage' => $medicine->getUsageInstructions(),
-            'isFavorite' => $isFavorite,
+            'isFavorite' => $user ? $user->isFavs($medicine) : false,
         ];
 
         // Récupérez les médicaments associés en excluant le médicament de base
@@ -99,6 +94,7 @@ class HomeController extends AbstractController
 
         // Mappez les médicaments associés pour obtenir un tableau de données
         $relatedMedicinesData = $relatedMedicines->map(function (Medicine $relatedMedicine) {
+            $user = $this->getUser();
             return [
                 'name' => $relatedMedicine->getName(),
                 'dosage' => $relatedMedicine->getDosage(),
@@ -118,6 +114,7 @@ class HomeController extends AbstractController
                 'imageLink' => $relatedMedicine->getImageLink(),
                 'shortDescription' => $relatedMedicine->getShortDescription(),
                 'usage' => $relatedMedicine->getUsageInstructions(),
+                'isFavorite' => $user ? $user->isFavs($relatedMedicine) : false,
             ];
         })->toArray();
 
@@ -126,40 +123,78 @@ class HomeController extends AbstractController
 
         return new JsonResponse($data);
     }
+    
+    
     /**
-     * @Route("/api/medicines/{name}/favorite", name="api_add_favorite", methods={"POST"})
+     * @Route("/api/medicines/favorite", name="api_add_favorite", methods={"POST"})
      */
-    public function addFavorite(string $name, EntityManagerInterface $em): JsonResponse
+    public function addFavorite(EntityManagerInterface $em, Request $request): JsonResponse
     {
-        // Récupère l'utilisateur connecté
+        $name = $request->request->get('name');
         $user = $this->getUser();
-
+    
         // Vérifie si l'utilisateur est connecté
         if (!$user) {
             return new JsonResponse(['error' => 'authentication_required'], 401);
         }
-
+    
         // Récupère le médicament à partir de son nom
         $medicine = $em->getRepository(Medicine::class)->findOneBy(['name' => $name]);
-
+    
         if (!$medicine) {
             return new JsonResponse(['error' => 'medicine_not_found'], 404);
         }
-
+    
         // Vérifie si le médicament est déjà dans les favoris de l'utilisateur
-        if ($user->getFavs()->contains($medicine)) {
+        if ($user->isFavs($medicine)) {
             return new JsonResponse(['message' => 'medicine_already_in_favorites'], 200);
         }
-
+    
         // Ajoute le médicament aux favoris de l'utilisateur
-        $user->addFavs($medicine);
+        $user->addFav($medicine);
+    
+        // // Persiste les modifications dans la base de données
+        $em->persist($user);
+        $em->flush();
+    
+        return new JsonResponse(['message' => 'medicine_added_to_favorites'], 201);
+    }
 
+    /**
+     * @Route("/api/medicines/favorite/remove", name="api_remove_favorite", methods={"POST"})
+     */
+    public function removeFavorite(EntityManagerInterface $em, Request $request): JsonResponse
+    {
+        $name = $request->request->get('name');
+        $user = $this->getUser();
+    
+        // Vérifie si l'utilisateur est connecté
+        if (!$user) {
+            return new JsonResponse(['error' => 'authentication_required'], 401);
+        }
+    
+        // Récupère le médicament à partir de son nom
+        $medicine = $em->getRepository(Medicine::class)->findOneBy(['name' => $name]);
+    
+        if (!$medicine) {
+            return new JsonResponse(['error' => 'medicine_not_found'], 404);
+        }
+    
+        // Vérifie si le médicament est déjà dans les favoris de l'utilisateur
+        if (!$user->isFavs($medicine)) {
+            return new JsonResponse(['message' => 'medicine_not_in_favorites'], 200);
+        }
+    
+        // Supprime le médicament des favoris de l'utilisateur
+        $user->removeFav($medicine);
+    
         // Persiste les modifications dans la base de données
         $em->persist($user);
         $em->flush();
-
-        return new JsonResponse(['message' => 'medicine_added_to_favorites'], 201);
+    
+        return new JsonResponse(['message' => 'medicine_removed_from_favorites'], 200);
     }
+
     /**
      * @Route("/api/user/favorites", name="api_user_favorites", methods={"GET"})
      */

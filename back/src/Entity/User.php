@@ -191,6 +191,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isFavs(Medicine $medicine): bool
     {
-        return $this->favs->contains($medicine);
+        foreach ($this->favs as $fav) {
+            if ($fav->getId() === $medicine->getId()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
