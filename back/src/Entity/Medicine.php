@@ -60,9 +60,9 @@ class Medicine
     private $size;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="json", nullable=true)
      */
-    private $conditionning;
+    private $conditioning;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -85,7 +85,7 @@ class Medicine
     private $durationTime;
 
     /**
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="json", nullable=true)
      */
     private $specificConditions = [];
 
@@ -93,6 +93,95 @@ class Medicine
      * @ORM\Column(type="string", length=255)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $secondaryEffectsDetailed = [];
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $imageLink;
+
+    /**
+     * @return array|null
+     */
+    public function getSecondaryEffectsDetailed(): ?array
+    {
+        return $this->secondaryEffectsDetailed;
+    }
+
+    /**
+     * @param array|null $secondaryEffectsDetailed
+     * @return self
+     */
+    public function setSecondaryEffectsDetailed(?array $secondaryEffectsDetailed): self
+    {
+        $this->secondaryEffectsDetailed = $secondaryEffectsDetailed;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $shortDescription;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $usageInstructions;
+
+    /**
+     * @return string|null
+     */
+    public function getShortDescription(): ?string
+    {
+        return $this->shortDescription;
+    }
+
+    /**
+     * @param string|null $shortDescription
+     * @return self
+     */
+    public function setShortDescription(?string $shortDescription): self
+    {
+        $this->shortDescription = $shortDescription;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUsageInstructions(): ?string
+    {
+        return $this->usageInstructions;
+    }
+
+    /**
+     * @param string|null $usageInstructions
+     * @return self
+     */
+    public function setUsageInstructions(?string $usageInstructions): self
+    {
+        $this->usageInstructions = $usageInstructions;
+
+        return $this;
+    }
+
+    public function getImageLink(): ?string
+    {
+        return $this->imageLink;
+    }
+
+    public function setImageLink(?string $imageLink): self
+    {
+        $this->imageLink = $imageLink;
+
+        return $this;
+    }
 
     public function __construct()
     {
@@ -114,7 +203,7 @@ class Medicine
     {
         $this->dosage = $dosage;
 
-        return $this;
+       return $this;
     }
 
     public function getMolecule(): ?Molecule
@@ -228,14 +317,14 @@ class Medicine
         return $this;
     }
 
-    public function getConditionning(): ?string
+    public function getConditioning(): ?array
     {
-        return $this->conditionning;
+        return $this->conditioning;
     }
 
-    public function setConditionning(?string $conditionning): self
+    public function setConditioning(?array $conditioning): self
     {
-        $this->conditionning = $conditionning;
+        $this->conditioning = $conditioning;
 
         return $this;
     }

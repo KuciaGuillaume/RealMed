@@ -1,3 +1,5 @@
+# config/packages/security.yaml
+
 security:
     enable_authenticator_manager: true
 
@@ -18,17 +20,22 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Security\AuthenticatorCustomAuthenticator
-            entry_point: App\Security\AuthenticatorCustomAuthenticator
+
             form_login:
-                login_path: login
-                check_path: login
+                login_path: /login
+                check_path: /login
+                username_parameter: username
+                password_parameter: password
+                success_handler: App\Security\LoginSuccessHandler
+                failure_handler: App\Security\LoginFailureHandler
+                enable_csrf: false
+
             logout:
-                path: app_logout
-                target: home
+                path: /logout
+                target: /home
 
     access_control:
-    - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/profile, roles: ROLE_USER }

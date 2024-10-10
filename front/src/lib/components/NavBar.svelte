@@ -2,8 +2,8 @@
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
   import { faUser, faStar, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+  import { isLoggerStore } from "$lib/store";
 
-  let isLoggedIn = false; // ! Development purpose only
   let isOpen = false;
 
   const toggleMenu = (event: { stopPropagation: () => void }) => {
@@ -34,7 +34,7 @@
       <a href="/" class="font-poppins text-xl text-cblue font-semibold">RealMed</a>
     </div>
     <div class="relative flex items-center">
-      {#if isLoggedIn}
+      {#if $isLoggerStore}
         <!-- menu burger -->
         <button
           type="button"

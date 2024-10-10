@@ -52,8 +52,8 @@ RUN chown -R www-data:www-data /var/www/html/var /var/www/html/vendor \
 # Nettoyer le cache Symfony
 RUN php bin/console cache:clear --no-warmup
 
-
 # Regénérer l'autoload optimisé
+RUN composer require nelmio/cors-bundle
 RUN composer dump-autoload --optimize
 RUN chown -R www-data:www-data /var/www/html/var/log /var/www/html/var/cache
 
