@@ -1,18 +1,24 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
 
-export const GET: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request, cookies }) => {
   try {
 
     console.log("API_CALL: ", "/drugs");
 
     const url = `${API_URL}/api/medicines`;
 
+    const PHPSESSID = cookies.get('PHPSESSID');
+
     const res = await fetch(url, {
       method: 'GET',
+      headers: {
+        'Cookie': `PHPSESSID=${PHPSESSID};`,
+      },
     });
 
     const bodyText = await res.text();
+    console.log('bodyText:', bodyText);
 
     if (res.ok) {
       const data = JSON.parse(bodyText);

@@ -72,12 +72,6 @@
               bind:this={dropdown}
             >
               <div class="py-1" role="none">
-                <a href="/profil" class="flex px-4 py-2 gap-5 hover:bg-gray-100">
-                  <div class="h-full aspect-square flex items-center justify-start">
-                    <Fa icon={faUser} class="text-cblue" size="lg" />
-                  </div>
-                  <span class="font-poppins text-sm text-gray-700">Profil</span>
-                </a>
                 <a href="/favoris" class="flex px-4 py-2 gap-4 hover:bg-gray-100">
                   <div class="h-full aspect-square items-center justify-start">
                     <Fa icon={faStar} class="text-cblue" size="lg" />

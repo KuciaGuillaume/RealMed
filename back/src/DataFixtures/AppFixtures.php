@@ -377,6 +377,52 @@ class AppFixtures extends Fixture
                 'imageUrl' => 'https://moncoinsante.com/mcs/66286-large_default/doliprane-paracetamol-150-mg-baby-suppositories-8-12-kg-pack-of-10-.jpg',
                 'description' => 'Une forme adaptée pour les enfants pour traiter les douleurs et la fièvre.',
                 'usage_instructions' => 'Insérer le suppositoire dans le rectum après avoir lubrifié l\'extrémité.'
+            ],
+            [
+                'molecule' => $molecule2,
+                'dosage' => '200mg',
+                'color' => 'Blanc',
+                'efficiencyTime' => '30 minutes',
+                'aspect' => 'Comprimé',
+                'size' => 'Petit',
+                'secondaryEffects' => 'Nausées, vertiges, ulcère gastrique',
+                'format' => 'Oral',
+                'administration' => "Avaler avec de l'eau",
+                'durationTime' => '4-6h',
+                'specificCondition' => ["man_adult", "woman_adult", "senior_man", "senior_woman"],
+                'name' => 'Ibuprofène Mylan 200mg',
+                'conditionning' => ['ibuprofene'],
+                'secondary_effects_detailed' => [
+                    ["name" => "Nausées", "severity" => 2],
+                    ["name" => "Vertiges", "severity" => 1],
+                    ["name" => "Ulcère gastrique", "severity" => 3]
+                ],
+                'imageUrl' => 'https://www.pharmashopi.com/images/Image/ibruprofene-200mg-mylan-1373125033.png',
+                'description' => 'Un anti-inflammatoire non stéroïdien pour traiter les douleurs légères à modérées.',
+                'usage_instructions' => 'Prendre 1 comprimé avec de l\'eau toutes les 4 à 6 heures, sans dépasser 1200 mg par jour.'
+            ],
+            [
+                'molecule' => $molecule2,
+                'dosage' => '400mg',
+                'color' => 'Blanc',
+                'efficiencyTime' => '30 minutes',
+                'aspect' => 'Comprimé',
+                'size' => 'Moyen',
+                'secondaryEffects' => 'Nausées, vertiges, saignement gastrique',
+                'format' => 'Oral',
+                'administration' => "Avaler avec de l'eau",
+                'durationTime' => '6-8h',
+                'specificCondition' => ["man_adult", "woman_adult", "senior_man", "senior_woman"],
+                'name' => 'Ibuprofène Mylan 400mg',
+                'conditionning' => ['ibuprofene'],
+                'secondary_effects_detailed' => [
+                    ["name" => "Nausées", "severity" => 2],
+                    ["name" => "Vertiges", "severity" => 1],
+                    ["name" => "Saignement gastrique", "severity" => 3]
+                ],
+                'imageUrl' => 'https://images.amavita.ch/product-images/ibuprofen-mylan-cpr-pell-400-mg-20-pce-main-001AH4.jpg',
+                'description' => 'Un dosage plus élevé pour les douleurs plus fortes, avec des effets anti-inflammatoires.',
+                'usage_instructions' => 'Prendre 1 comprimé avec de l\'eau toutes les 6 à 8 heures, sans dépasser 1200 mg par jour.'
             ]
         ];
 

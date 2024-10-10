@@ -42,25 +42,6 @@
 
 {#if isLoggedIn}
   <div class="flex z-0 w-full justify-center">
-    <div class="z-10 max-w-[60rem] w-full px-10 py-4">
-      <h1 class="font-poppins text-xl text-black font-semibold py-4">Bienvenue sur votre profil</h1>
-
-      <img src="https://via.placeholder.com/200" alt="profil img" class="rounded-full" />
-
-      <div class="flex flex-col gap-4 py-10">
-        <p class="font-poppins text-lg text-cblue font-semibold">{profile.name}</p>
-        <p class="font-poppins text-base text-gray-700">
-          Email : <span>{profile.email}</span>
-        </p>
-        <p class="font-poppins text-base text-gray-700">
-          Date de naissance : <span>{profile.birthdate}</span>
-        </p>
-        <p class="font-poppins text-base text-gray-700">
-          Numéro de téléphone : <span>{profile.phone}</span>
-        </p>
-      </div>
-    </div>
-
     <div class="flex flex-col w-full px-10 py-4 overflow-y-auto">
       <h2 class="font-poppins text-xl text-cblue font-semibold py-4">Vos favoris</h2>
 

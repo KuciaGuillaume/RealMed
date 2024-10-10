@@ -2,7 +2,7 @@
   import Fa from "svelte-fa";
   import Badge from "../Badge.svelte";
   import DonutChart from "./DonutChart.svelte";
-  import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+  import { faExclamationCircle, faStar } from "@fortawesome/free-solid-svg-icons";
   import { page } from "$app/stores";
   import { codeToCondition, getAllConditionsAsCode } from "$lib/functions";
 
@@ -19,9 +19,31 @@
   $: condition = $page.url.searchParams.get("condition");
   $: allergie = $page.url.searchParams.get("allergie");
 
+  const handleAddFavorite = async (drugName: string) => {
+    if (drug.data.isFavorite) {
+      const res = await fetch(`/api/remove_favorite?drugName=${drugName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      drug.data.isFavorite = !res.ok;
+    } else {
+      const res = await fetch(`/api/favorite?drugName=${drugName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      drug.data.isFavorite = res.ok;
+    }
+  }
+
+  $: console.log(drug);
+
 </script>
 
-<button on:click class="{isSelected ? "border-cblue" : "hover:bg-gray-50"}  flex flex-col gap-4 w-full h-fit shadow-md border-2 rounded-lg bg-white p-4">
+<button on:click class="{isSelected ? "border-cblue" : "hover:bg-gray-50"} relative flex flex-col gap-4 w-full h-fit shadow-md border-2 rounded-lg bg-white p-4">
   <div class="flex flex-row gap-4">
     {#if isTargeted}
       <div class="w-fit min-h-8 rounded-md bg-cblue border border-cblue flex flex-row gap-2 items-center px-2">
@@ -74,4 +96,7 @@
       </div>
     </div>
   </div>
+  <button on:click|stopPropagation={() => handleAddFavorite(drug.name)} class="absolute size-10 right-0 top-0 mr-2 mt-2 flex items-center justify-center">
+    <Fa icon={faStar} color={drug.data.isFavorite ? "rgb(2 121 194" : "rgb(229 231 235)"} />
+  </button>
 </button>
