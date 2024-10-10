@@ -10,11 +10,16 @@
   import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import { selectedDrugStore } from "$lib/store";
+  import { page } from "$app/stores";
 
   let selectedDrug  = "";
   let selectedCondition = "";
   let selectedAllergie = "";
   let drugs : { name: string, shortDescription: string }[] = [];
+
+  $: drugUrl = $page.url.searchParams.get("drug");
+  $: conditionUrl = $page.url.searchParams.get("condition");
+  $: allergieUrl = $page.url.searchParams.get("allergie");
 
   export let isSearched = false;
   export let isLargePanel = false;
@@ -72,7 +77,9 @@
     drugs = await res.json();
 
     if (isSearched && !fetchedOnce) {
-      selectedDrug = drugs.find((drug) => drug.name.toLowerCase() === (drug.name || "").toLowerCase())?.name || "";
+      selectedDrug = drugs.find((drug) => drug.name.toLowerCase() === (drugUrl || "").toLowerCase())?.name || "";
+      selectedCondition = conditionUrl || "";
+      selectedAllergie = allergieUrl || "";
       handleSearch();
     }
   });

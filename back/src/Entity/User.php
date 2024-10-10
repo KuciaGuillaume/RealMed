@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\ManyToMany(targetEntity=Medicine::class, inversedBy="users")
      */
-    private $favs;
+    private Collection $favs;
 
     public function __construct()
     {
@@ -187,5 +187,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->favs->removeElement($fav);
 
         return $this;
+    }
+
+    public function isFavs(Medicine $medicine): bool
+    {
+        return $this->favs->contains($medicine);
     }
 }

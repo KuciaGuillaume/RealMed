@@ -1,5 +1,3 @@
-# config/packages/security.yaml
-
 security:
     enable_authenticator_manager: true
 
@@ -17,6 +15,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        # Pare-feu pour les pages classiques (ex. pour les administrateurs)
         main:
             lazy: true
             provider: app_user_provider
@@ -29,13 +28,18 @@ security:
                 success_handler: App\Security\LoginSuccessHandler
                 failure_handler: App\Security\LoginFailureHandler
                 enable_csrf: false
-
             logout:
-                path: /logout
-                target: /home
+                path: app_logout
+                target: login
 
-    access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/profile, roles: ROLE_USER }
+    # access_control:
+    #     # Autoriser l'accès à la route de login API sans authentification
+    #     - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    #     # Exiger une authentification pour toutes les autres routes API
+    #     - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+    #     # Restreindre l'accès aux routes de l'administrateur
+    #     - { path: ^/admin, roles: ROLE_ADMIN }
+    #     # Autoriser l'accès à la page de login classique sans authentification
+    #     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    #     # Autoriser l'accès à la déconnexion sans authentification
+    #     - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY }

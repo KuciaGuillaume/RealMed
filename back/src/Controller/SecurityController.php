@@ -12,30 +12,30 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class SecurityController extends AbstractController
 {
-        /**
-         * @Route("/login", name="login", methods={"POST"})
-         */
-        public function login(Request $request, SessionInterface $session): JsonResponse
-        {
-            $username = $request->request->get('username');
-            $password = $request->request->get('password');
+    /**
+     * @Route("/login", name="login", methods={"POST"})
+     */
+    public function login(Request $request, SessionInterface $session): JsonResponse
+    {
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
 
-            // Vérifiez les informations d'identification ici et démarrez une session si elles sont valides
-            if ($this->authService->isValidCredentials($username, $password)) {
-                $session->start();
-                $session->set('user', $username);
+        // Vérifiez les informations d'identification ici et démarrez une session si elles sont valides
+        if ($this->authService->isValidCredentials($username, $password)) {
+            $session->start();
+            $session->set('user', $username);
 
-                // Envoi du cookie de session
-                return new JsonResponse(['message' => 'Login successful'], Response::HTTP_OK, [
-                    'Set-Cookie' => 'PHPSESSID=' . $session->getId() . '; Path=/; HttpOnly; Secure'
-                ]);
-            }
-
-            return new JsonResponse(['message' => 'Login failed'], Response::HTTP_UNAUTHORIZED);
+            // Envoi du cookie de session
+            return new JsonResponse(['message' => 'Login successful'], Response::HTTP_OK, [
+                'Set-Cookie' => 'PHPSESSID=' . $session->getId() . '; Path=/; HttpOnly; Secure'
+            ]);
         }
 
+        return new JsonResponse(['message' => 'Login failed'], Response::HTTP_UNAUTHORIZED);
+    }
+
     /**
-     * @Route("/logout", name="app_logout")
+     * @Route("/logout", name="app_logout", methods={"GET", "POST"})
      */
     public function logout(): void
     {

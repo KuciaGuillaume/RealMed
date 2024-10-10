@@ -45,6 +45,11 @@ class Medicine
     private $contraindication;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Medicine::class, inversedBy="users")
+    */
+    private Collection $favs;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $efficiencyTime;
@@ -216,6 +221,11 @@ class Medicine
         $this->molecule = $molecule;
 
         return $this;
+    }
+
+    public function isFavs(Medicine $medicine): bool
+    {
+        return $this->favs->contains($medicine);
     }
 
     /**
@@ -399,5 +409,10 @@ class Medicine
         $this->name = $name;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 }

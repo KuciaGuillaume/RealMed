@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import { registerEmailStore } from "$lib/store";
+  import { isLoggerStore, registerEmailStore } from "$lib/store";
   import { faCheck } from "@fortawesome/free-solid-svg-icons";
   import { onMount } from "svelte";
   import Fa from "svelte-fa";
@@ -83,6 +83,8 @@
       isLoading = false;
       return;
     } else {
+      const res = await fetch('/api/check', { method: 'GET'});
+      $isLoggerStore = res.ok ? 'logged' : 'notlogged';
       goto('/');
     }
 

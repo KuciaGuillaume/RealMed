@@ -85,7 +85,7 @@
         })
       });
       if (res.ok) {
-        goto('/');
+        goto('/login');
       } else {
         alert('Une erreur est survenue lors de la création de votre compte.');
       }

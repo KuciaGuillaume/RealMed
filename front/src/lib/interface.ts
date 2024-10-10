@@ -11,13 +11,14 @@ interface DrugResult {
   format: string;
   molecule: string;
   secondaryEffects: string;
-  size: string;
-  specificCondition: string[];
   secondaryEffectsDetails: {
     name: string;
     severity: number;
-  }[],
+  }[];
+  size: string;
+  specificCondition: string[];
   imageLink: string;
   shortDescription: string;
   usage: string;
+  isFavorite: boolean;
 }

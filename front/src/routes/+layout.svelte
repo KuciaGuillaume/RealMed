@@ -12,12 +12,7 @@
         "Content-Type": "application/json",
       },
     });
-    if (res.ok) {
-      isLoggerStore.set(true);
-    } else {
-      isLoggerStore.set(false);
-    }
-    console.log($isLoggerStore);
+    $isLoggerStore = res.ok ? 'logged' : 'notlogged';
   });
 
 </script>

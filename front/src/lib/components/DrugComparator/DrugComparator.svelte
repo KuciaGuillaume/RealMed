@@ -7,17 +7,20 @@
   import { selectedDrugStore } from "$lib/store";
   import Fa from "svelte-fa";
   import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-  import DrugItem from "./DrugItem.svelte";
 
   export let drugData: DrugResult[] | null = null;
   export let isLargePanel: boolean;
   export let isSearched: boolean;
+
+  $: console.log(drugData);
 
   let innerHeight : number = 0;
 
   // Fonction pour parser les temps
   function parseTime(timeStr : string) {
     let timeInMinutes = 0;
+
+    if (!timeStr) return timeInMinutes;
 
     if (timeStr.includes('-')) {
       // Plage de valeurs
@@ -177,7 +180,6 @@
                   <StatLabel label={"Forme d'administration"} value={drug?.format ?? "N/A"} />
                   <StatLabel label={"Méthode d'administration"} value={drug?.administration ?? "N/A"} />
                   <StatLabel label={"Durée d'efficacité"} value={drug?.efficiencyTime ?? "N/A"} />
-                  <StatLabel label={"Conditionnement"} value={"N/A"} />
                   <StatLabel label={"Aspect"} value={drug?.aspect ?? "N/A"} />
                   <StatLabel label={"Couleur"} value={drug?.color ?? "N/A"} />
                   <StatLabel label={"Indications fréquentes"} value={drug?.commonAffliction ?? "N/A"} />
@@ -186,23 +188,23 @@
               <div class="w-full max-h-[15rem] flex-row flex">
                 <div class="h-full w-1/2">
                   <h2 class="font-poppins"> Sévérité des effets secondaires </h2>
-                  <div class="h-full aspect-square -mt-8">
+                  <div class="h-full aspect-square -mt-8 w-full">
                     <DonutChartSpec 
                       label={null}
                       data={[
                         {
-                          category: "Faible risque",
+                          category: "Sévérité faible",
                           value: percentOfLowSeverity,
                           color: '#32de84'
         
                         },
                         {
-                          category: 'Risque moyen',
+                          category: 'Sévérité moyenne',
                           value: percentOfMediumSeverity,
                           color: '#f7b52b'
                         },
                         {
-                          category: 'Risque élevé',
+                          category: 'Sévérité élevé',
                           value: percentOfHighSeverity,
                           color: '#f54242'
                         }
