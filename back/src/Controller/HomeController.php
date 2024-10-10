@@ -213,6 +213,7 @@ class HomeController extends AbstractController
 
         // Convertit les favoris en un tableau de données
         $data = $favorites->map(function (Medicine $medicine) {
+            $user = $this->getUser();
             // Récupération des effets secondaires via la molécule
             $molecule = $medicine->getMolecule();
             $moleculeSecondaryEffects = $molecule ? $molecule->getSecondaryEffects()->map(function (SecondaryEffect $effect) {
@@ -225,21 +226,24 @@ class HomeController extends AbstractController
 
             return [
                 'name' => $medicine->getName(),
-                'shortDescription' => $medicine->getShortDescription(),
-                'imageLink' => $medicine->getImageLink(),
                 'dosage' => $medicine->getDosage(),
                 'color' => $medicine->getColor(),
-                'efficiency_time' => $medicine->getEfficiencyTime(),
+                'efficiencyTime' => $medicine->getEfficiencyTime(),
                 'aspect' => $medicine->getAspect(),
-                'common_affliction' => $molecule ? $molecule->getCommonAffliction() : null,
+                'commonAffliction' => $medicine->getMolecule()->getCommonAffliction(),
                 'size' => $medicine->getSize(),
                 'conditioning' => $medicine->getConditioning(),
-                'secondary_effects' => $moleculeSecondaryEffects,
+                'secondaryEffects' => $medicine->getSecondaryEffects(),
                 'format' => $medicine->getFormat(),
                 'administration' => $medicine->getAdministration(),
-                'duration_time' => $medicine->getDurationTime(),
-                'specific_conditions' => $medicine->getSpecificConditions(),
-                'molecule' => $molecule ? $molecule->getName() : null,
+                'durationTime' => $medicine->getDurationTime(),
+                'specificCondition' => $medicine->getSpecificConditions(),
+                'molecule' => $medicine->getMolecule()->getName(),
+                'secondaryEffectsDetails' => $medicine->getSecondaryEffectsDetailed(),
+                'imageLink' => $medicine->getImageLink(),
+                'shortDescription' => $medicine->getShortDescription(),
+                'usage' => $medicine->getUsageInstructions(),
+                'isFavorite' => $user ? $user->isFavs($medicine) : false,
             ];
         })->toArray();
 

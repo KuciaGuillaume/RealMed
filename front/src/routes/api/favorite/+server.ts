@@ -37,3 +37,32 @@ export const POST: RequestHandler = async ({ url, cookies }) => {
     return new Response(JSON.stringify({ message: 'Internal server error' }), { status: 500 });
   }
 };
+
+export const GET: RequestHandler = async ({ url, cookies }) => {
+  try {
+    console.log("API_CALL: ", "/favorite");
+
+    const apiUrl = `${API_URL}/api/user/favorites`;
+
+    const PHPSESSID = cookies.get('PHPSESSID');
+
+    const res = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Cookie': `PHPSESSID=${PHPSESSID};`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      return new Response(JSON.stringify(data), { status: 200 });
+    } else {
+      return new Response(JSON.stringify({ message: 'Failed to add favorite' }), { status: 400 });
+    }
+
+  } catch (e) {
+    console.error(e);
+    return new Response(JSON.stringify({ message: 'Internal server error' }), { status: 500 });
+  }
+};

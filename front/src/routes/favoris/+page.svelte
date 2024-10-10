@@ -1,96 +1,121 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { goto } from "$app/navigation";
   import { Fa } from "svelte-fa";
-  import { faTrash, faSearch } from "@fortawesome/free-solid-svg-icons";
+  import { faChevronLeft, faStar } from "@fortawesome/free-solid-svg-icons";
+  import DrugItem from "$lib/components/DrugComparator/DrugItem.svelte";
+  import { goto } from "$app/navigation";
+  import { getScore } from "$lib/functions";
+  import Spinner from "$lib/components/Spinner.svelte";
+  import { isLoggerStore } from "$lib/store";
+  import { fly } from "svelte/transition";
 
-  let isLoggedIn = true; // ! Development purpose only
+  let favorites : DrugResult[] = [];
+  let innerHeight = 0;
+  let isLoading = true;
+  let isMounted = false;
 
-  // Redirect to home page
-  onMount(() => {
-    if (!isLoggedIn) {
-      goto("/signin");
-      return;
-    }
-  });
-
-  let profile = {
-    name: "Nom Prénom",
-    email: "admail@mail.com",
-    birthdate: "01/01/2000",
-    phone: "06 12 34 56 78",
+  const onDrugHandleFavorite = (drug: string) => {
+    favorites = favorites.filter(favorite => favorite.name !== drug);
   };
 
-  let favorites = [
-    {
-      name: "Nom du médicament",
-      description: "Description du médicament",
-      img: "https://via.placeholder.com/100",
-    },
-    {
-      name: "Nom du médicament",
-      description: "Description du médicament",
-      img: "https://via.placeholder.com/100",
-    },
-    {
-      name: "Nom du médicament",
-      description: "Description du médicament",
-      img: "https://via.placeholder.com/100",
-    },
-  ];
+  const onDrugClick = (drug: DrugResult) => {
+    goto(`/?drug=${drug.name}`);
+  };
+
+  // Redirect to home page
+  onMount(async () => {
+    isMounted = true;
+    const res = await fetch("/api/favorite", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    favorites = await res.json();
+    isLoading = false;
+  });
 </script>
 
-{#if isLoggedIn}
+<svelte:window bind:innerHeight />
+
+{#if isMounted}
   <div class="flex z-0 w-full justify-center">
-    <div class="flex flex-col w-full px-10 py-4 overflow-y-auto">
-      <h2 class="font-poppins text-xl text-cblue font-semibold py-4">Vos favoris</h2>
+    <div class="flex flex-row w-full px-10 py-4 max-w-[70rem] pt-10 gap-8">
+      <div class="w-[25%] h-fit flex flex-col gap-2">
+        <a href="/" class="font-poppins text-cblue flex items-center flex-row gap-2 text-sm mb-2">
+          <Fa icon={faChevronLeft} color={"rgb(2 121 194)"} />
+          Back
+        </a>
+        <a 
+          class="w-full h-12 rounded-xl hover:bg-gray-200 duration-200 flex items-center p-4 text-sm flex-row gap-2"
+          href="/favoris">
+          <div class="w-1 h-full bg-gray-700">
 
-      {#if Array.isArray(favorites) && favorites.length > 0}
-        <div class="flex flex-col max-h-[70vh] overflow-y-auto w-fit w-full">
-          {#each favorites as favorite}
-            <div
-              class="flex items-center gap-4 md:gap-10 pr-10 rounded-lg transition-all duration-300 ease-in-out hover:bg-cgray p-2"
-            >
-              <img
-                src={favorite.img}
-                alt={`Image of ${favorite.name}`}
-                class="w-16 h-16 md:w-20 md:h-20 rounded-lg object-cover"
-              />
-              <div class="flex flex-col gap-1 md:gap-2 flex-grow">
-                <p class="font-poppins text-base md:text-lg text-cblue font-semibold">
-                  {favorite.name}
-                </p>
-                <p class="font-poppins text-sm md:text-base text-gray-700">
-                  {favorite.description}
-                </p>
-              </div>
-              <button
-                class="p-2 rounded-lg font-poppins text-sm font-medium text-white bg-cred hover:bg-credHover focus:outline-none focus:ring-2 focus:ring-cred focus:ring-opacity-50"
-                aria-label="Remove {favorite.name} from favorites"
-              >
-                <Fa icon={faTrash} class="text-white m-1" />
-              </button>
-            </div>
-          {/each}
-        </div>
-      {:else}
-        <div class="flex flex-col overflow-y-auto w-full h-fit justify-center items-center">
-          <!-- Placeholders items -->
-          {#each Array(3) as _}
-            <div
-              class="flex items-center rounded-lg bg-gray-200 animate-pulse py-2 my-1 w-full h-20"
-            ></div>
-          {/each}
-
-          <!-- Not found indication -->
-          <div class="flex flex-col items-center absolute w-fit">
-            <Fa icon={faSearch} class="text-black" />
-            <p class="text-gray-500 text-center text-sm leading-tight">
-              Aucun favori trouvé.<br />Recherchez un médicament pour l'ajouter à vos favoris !
-            </p>
           </div>
-        </div>
-      {/if}
+          Favoris
+        </a>
+        <a 
+          class="w-full h-12 rounded-xl hover:bg-gray-200 duration-200 flex items-center p-4 text-sm text-black/40 hover:text-black"
+          href="/help_and_support">
+          Aide et support
+        </a>
+      </div>
+      <div 
+        in:fly={{ duration: 200, y: 10 }}
+        class="w-[75%] flex flex-col gap-4">
+        {#if $isLoggerStore == 'notlogged'}
+          <div class="flex w-full h-20 rounded-lg shadow-lg border flex-row pl-2">
+            <div class="h-full w-14 flex justify-center pt-4">
+              <div class="rounded-full w-8 h-8 flex items-center justify-center bg-cgray">
+                <Fa icon={faStar} color={"rgb(2 121 194)"} />
+              </div>
+            </div>
+            <div class="flex flex-col p-4 gap-1">
+              <h2 class="font-poppins text-lg font-semibold">
+                Prenez note de vos médicaments préférés
+              </h2>
+              <p class="font-poppins text-xs text-gray-600">
+                <a href="/signin" class="text-cblueHover hover:underline">Connectez-vous ou créez un compte</a> pour enregistrer vos médicaments favoris sur votre compte.
+              </p>
+            </div>
+          </div>
+        {:else}
+          <h1 class="font-poppins text-3xl font-semibold">
+            Vos favoris
+          </h1>
+          {#if !isLoading}
+            <div
+              style="height: calc({innerHeight}px - 180px);"
+              class="flex flex-col gap-4 pr-10 overflow-y-auto">
+              {#if favorites.length > 0}
+                {#each favorites as favorite}
+                  <DrugItem 
+                    on:click={() => onDrugClick(favorite)}
+                    handleFavorite={onDrugHandleFavorite}
+                    drug={{
+                      name: favorite.name,
+                      description: favorite.shortDescription,
+                      imgLink: favorite.imageLink,
+                      score: getScore(favorite),
+                      data: favorite
+                    }}
+                  />
+                {/each}
+              {:else}
+                  <p class="font-poppin text-gray-400 text-sm pl-1">
+                    Il semblerais que vous n'avez pas encore mis de médicament en favoris. Vous pouvez ajouter des médicaments en favoris en cliquant sur la petite étoile sur la page de détails d'un médicament.
+                  </p>
+              {/if}
+            </div>
+          {:else}
+            <div 
+              style="height: calc({innerHeight}px - 180px);"
+              class="size-full flex items-center justify-center">
+              <Spinner size={"size-10"} />
+            </div>
+          {/if}
+        {/if}
+      </div>
     </div>
   </div>
 {/if}

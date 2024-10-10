@@ -15,6 +15,7 @@
     score: number,
     data: DrugResult
   };
+  export let handleFavorite : (drugName: string) => void = () => {};
 
   $: condition = $page.url.searchParams.get("condition");
   $: allergie = $page.url.searchParams.get("allergie");
@@ -37,9 +38,8 @@
       });
       drug.data.isFavorite = res.ok;
     }
+    handleFavorite(drugName);
   }
-
-  $: console.log(drug);
 
 </script>
 
@@ -64,7 +64,7 @@
     {/if}
   </div>
   <div class="flex flex-row w-full h-full min-h-[9rem] max-h-[9rem] gap-4">
-    <div class="min-h-full max-h-full aspect-square rounded-lg overflow-hidden rounded-r-none">
+    <div class="min-w-[8rem] min-h-[8rem] max-w-[8rem] max-h-[8rem] rounded-lg overflow-hidden rounded-r-none">
       <img src={drug.imgLink} alt="" class="size-full object-cover">
     </div>
     <div class="flex flex-col gap-2 h-full justify-center">
